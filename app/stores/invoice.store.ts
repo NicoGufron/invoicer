@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { useShallow } from "zustand/react/shallow";
 
 export interface LineItem {
     id: string,
@@ -27,6 +28,7 @@ export interface InvoiceData {
 }
 
 const uid = () => Math.random().toString(36).slice(2, 8);
+const year = new Date().getFullYear();
 
 const defaultInvoice: InvoiceData = {
     companyName: "Your Company",
@@ -35,7 +37,7 @@ const defaultInvoice: InvoiceData = {
     clientName: "Client Name",
     clientAddress: "456 Client Ave, City, State 00000",
     clientEmail: "client@example.com",
-    invoiceNumber: "INV-001",
+    invoiceNumber: "INV/" + year + "/001",
     issueDate: new Date().toISOString().split("T")[0],
     dueDate: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
     logoUrl: null,

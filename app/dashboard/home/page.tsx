@@ -1,11 +1,18 @@
+import { useAuthStore } from "@/app/stores/auth.store";
 import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/item";
+import { createClient } from "@/lib/server";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
+
+    const supabase = await createClient();
+
+    const user = await supabase.auth.getUser();
+
     return (
         <div className="p-6">
-            <h1 className="text-2xl font-bold">Welcome, user</h1>
+            <h1 className="text-2xl font-bold">Welcome, {user.data.user?.user_metadata.fullName}</h1>
             <hr className="my-5"></hr>
             <div className="">
                 <p className="text-xl font-bold">Quick Links</p>
@@ -23,7 +30,7 @@ export default function Home() {
                         </Link>
                     </Item>
                     <Item variant={"outline"} className="bg-white" asChild>
-                        <Link href="/dashboard/partner/create">
+                        <Link href="/dashboard/partner/">
                             <ItemContent>
                                 <ItemTitle>Add new Partner</ItemTitle>
                                 <ItemDescription>Create a new partner and save for future use</ItemDescription>
