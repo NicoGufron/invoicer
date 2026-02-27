@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 
 export default function PartnerPage() {
 
-    const supabase = createClient();
+    // const supabase = createClient();
 
     const { isLoading, partners, getPartners } = usePartnerStore();
 
