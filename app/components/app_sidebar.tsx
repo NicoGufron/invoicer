@@ -26,20 +26,41 @@ export function AppSidebar() {
                         <SidebarMenu>
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild>
-                                    <Link href="/dashboard">
+                                    <Link href="/dashboard/home">
                                         <Home></Home>
                                         Home
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                             <SidebarMenuItem>
-
-                                <SidebarMenuButton asChild>
-                                    <Link href="/dashboard/generate">
+                                {/* <SidebarMenuButton> */}
+                                    <Collapsible>
+                                        <CollapsibleTrigger asChild>
+                                            <SidebarMenuButton variant="outline">
+                                                <FileText></FileText>
+                                                Invoice
+                                            </SidebarMenuButton>
+                                        </CollapsibleTrigger>
+                                        <CollapsibleContent>
+                                            <SidebarMenuSub>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuButton>
+                                                        <Link href="/dashboard/invoice/create">Create Invoice</Link>
+                                                    </SidebarMenuButton>
+                                                </SidebarMenuSubItem>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuButton>
+                                                        <Link href="/dashboard/invoice/view">View Invoice</Link>
+                                                    </SidebarMenuButton>
+                                                </SidebarMenuSubItem>
+                                            </SidebarMenuSub>
+                                        </CollapsibleContent>
+                                    </Collapsible>
+                                    {/* <Link href="/dashboard/generate">
                                         <FileText />
-                                        Generate Invoice
-                                    </Link>
-                                </SidebarMenuButton>
+                                        Invoice
+                                    </Link> */}
+                                {/* </SidebarMenuButton> */}
                             </SidebarMenuItem>
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild>
@@ -72,7 +93,7 @@ export function AppSidebar() {
                                 </Collapsible> */}
                             </SidebarMenuItem>
                             <SidebarMenuItem>
-                                <SidebarMenuButton asChild className="cursor-pointer" onClick={ async () => await logout()}>
+                                <SidebarMenuButton asChild className="cursor-pointer" onClick={async () => await logout()}>
                                     {/* <Link href="/"> */}
                                     <a>
 
