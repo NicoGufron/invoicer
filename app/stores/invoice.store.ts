@@ -13,9 +13,11 @@ export interface InvoiceData {
     companyName: string,
     companyAddress: string,
     companyEmail: string,
+    companyNumber: string,
     clientName: string,
     clientAddress: string,
     clientEmail: string,
+    clientNumber: string,
     invoiceNumber: string,
     issueDate: string,
     dueDate: string,
@@ -25,6 +27,7 @@ export interface InvoiceData {
     discountRate: number;
     notes: string,
     terms: string,
+    currency?: string,
 }
 
 const uid = () => Math.random().toString(36).slice(2, 8);
@@ -34,18 +37,21 @@ const defaultInvoice: InvoiceData = {
     companyName: "Your Company",
     companyAddress: "123 Main St, City, State 00000",
     companyEmail: "hello@yourcompany.com",
+    companyNumber: "",
     clientName: "Client Name",
     clientAddress: "456 Client Ave, City, State 00000",
     clientEmail: "client@example.com",
+    clientNumber: "",
     invoiceNumber: "INV/" + year + "/001",
     issueDate: new Date().toISOString().split("T")[0],
     dueDate: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
     logoUrl: null,
     items: [{ id: uid(), name: "Item", description: "Service or product", quantity: 1, rate: 100 }],
-    taxRate: 10,
+    taxRate: 0,
     discountRate: 0,
     notes: "Thank you for your business!",
     terms: "Payment due within 30 days of invoice date.",
+    currency: "USD",
 }
 
 interface InvoiceStore {

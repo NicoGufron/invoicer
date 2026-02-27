@@ -1,9 +1,9 @@
 "use client"
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { InvoiceData, LineItem, useInvoiceStore } from "../stores/invoice.store";
 import { Input } from "@/components/ui/input";
-import { ChevronDownIcon, Plus, Trash2, Upload, X } from "lucide-react";
+import { Check, ChevronDown, ChevronDownIcon, Plus, Trash2, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,18 +12,20 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { format } from "date-fns";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger } from "@/components/ui/select";
+import { Partner, usePartnerStore } from "../stores/partner.store";
+import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { cn } from "@/lib/utils";
 
 export default function InvoiceEditor() {
     return (
         <div className="flex flex-col gap-6 overflow-y-auto p-5 h-full">
             <LogoSection></LogoSection>
             <hr></hr>
-            <div className="grid grid-cols-2 gap-5">
-                <SenderSection></SenderSection>
-                <ClientSection></ClientSection>
-            </div>
-            <hr></hr>
             <MetaSection></MetaSection>
+            <hr></hr>
+            <SenderSection></SenderSection>
+            <hr></hr>
+            <ClientSection></ClientSection>
             <hr></hr>
             <LineItemsSections></LineItemsSections>
             <hr></hr>
@@ -76,6 +78,8 @@ function SenderSection() {
     const companyName = useInvoiceStore((s) => s.invoice.companyName);
     const companyAddress = useInvoiceStore((s) => s.invoice.companyAddress);
     const companyEmail = useInvoiceStore((s) => s.invoice.companyEmail);
+    const companyNumber = useInvoiceStore((s) => s.invoice.companyNumber);
+
 
     const updateInvoice = useInvoiceStore((s) => s.updateInvoice);
 
@@ -99,6 +103,10 @@ function SenderSection() {
                         <Input value={companyEmail} onChange={(e) => handleChange("companyEmail", e)}></Input>
                     </Field>
                     <Field>
+                        <FieldLabel>Company Number</FieldLabel>
+                        <Input value={companyNumber} onChange={(e) => handleChange("companyNumber", e)}></Input>
+                    </Field>
+                    <Field>
                         <FieldLabel>Company Address</FieldLabel>
                         <Textarea value={companyAddress} onChange={(e) => handleChange("companyAddress", e)}></Textarea>
                     </Field>
@@ -112,7 +120,39 @@ function ClientSection() {
     const clientName = useInvoiceStore((s) => s.invoice.clientName);
     const clientEmail = useInvoiceStore((s) => s.invoice.clientEmail);
     const clientAddress = useInvoiceStore((s) => s.invoice.clientAddress);
+    const clientNumber = useInvoiceStore((s) => s.invoice.clientNumber);
     const updateInvoice = useInvoiceStore((s) => s.updateInvoice);
+
+    const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
+
+    const [openPartner, setOpenPartner] = useState(false);
+
+    const { getPartners } = usePartnerStore();
+    const partners = usePartnerStore((s) => s.partners);
+
+    useEffect(() => {
+        const fetchPartners = async () => {
+            await getPartners();
+        }
+
+        fetchPartners();
+    }, [])
+
+    useEffect(() => {
+        if (!selectedPartner) return;
+        console.log(selectedPartner);
+        handleChangePartner('clientName', selectedPartner.name);
+        handleChangePartner('clientEmail', selectedPartner.email);
+        handleChangePartner('clientAddress', selectedPartner.address);
+        handleChangePartner('clientNumber', selectedPartner.phone);
+
+    }, [selectedPartner])
+
+    const handleChangePartner = (key: keyof InvoiceData, e: string) => {
+        updateInvoice({
+            [key]: e
+        })
+    }
 
     const handleChange = (key: keyof InvoiceData, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         updateInvoice({
@@ -123,7 +163,34 @@ function ClientSection() {
     return (
         <div>
             <p className="text-xl font-bold">Bill To</p>
-            <div className="flex flex-col gap-3 py-5">
+            <Popover open={openPartner} onOpenChange={setOpenPartner}>
+                <PopoverTrigger asChild>
+                    <Button className="mt-5 flex-1 justify-between" variant="outline">{selectedPartner?.name ?? "Choose Partner"}<ChevronDown></ChevronDown></Button>
+                </PopoverTrigger>
+                <PopoverContent align="start">
+                    <Command>
+                        <CommandInput></CommandInput>
+                        <CommandList>
+                            {partners.map((partner) => (
+                                <CommandItem key={partner.id} keywords={[partner.name]} onSelect={(e) => {
+                                    setSelectedPartner(partner);
+                                    setOpenPartner(false);
+                                }}>
+                                    <span className="flex flex-col">
+                                        <p>{partner.name}</p>
+                                        <p className="text-xs">{partner.phone}</p>
+                                        <p className="text-xs">{partner.email}</p>
+
+                                    </span>
+                                    <Check className={cn("ml-auto", selectedPartner?.name === partner.name ? "opacity-100" : "opacity-0")}></Check>
+                                </CommandItem>
+                            ))}
+                        </CommandList>
+                    </Command>
+                </PopoverContent>
+            </Popover>
+            <hr className="my-5"></hr>
+            <div className="flex flex-col gap-3">
                 <FieldGroup>
 
                     <Field>
@@ -133,6 +200,10 @@ function ClientSection() {
                     <Field>
                         <FieldLabel>Client Address</FieldLabel>
                         <Input value={clientAddress} onChange={(e) => handleChange('clientAddress', e)}></Input>
+                    </Field>
+                    <Field>
+                        <FieldLabel>Client Number</FieldLabel>
+                        <Input value={clientNumber} onChange={(e) => handleChange('clientNumber', e)}></Input>
                     </Field>
                     <Field>
                         <FieldLabel>Client Email</FieldLabel>
@@ -231,50 +302,69 @@ function LineItemRow({ item }: { item: LineItem }) {
     const updateItem = useInvoiceStore((s) => s.updateItem);
     const removeItem = useInvoiceStore((s) => s.removeItem);
 
+    const updateInvoice = useInvoiceStore((s) => s.updateInvoice);
+
+    const handleChangeCurrency = (code: string) => {
+        updateInvoice({
+            currency : code
+        })
+    }
+
     const CURRENCIES = [
         {
             value: "$",
+            code: "USD",
             label: "US Dollar"
         },
         {
             value: "€",
+            code: "EUR",
             label: "Euro"
         },
         {
             value: "£",
+            code: "GBP",
             label: "British Pound",
         },
         {
             value: "Rp",
+            code: "IDR",
             label: "Indonesian Rupiah"
         }
     ]
 
     const [currency, setCurrency] = useState("$");
+    const [openCurrency, setOpenCurrency] = useState(false);
 
     return (
-        <div className="grid grid-cols-[1fr_2fr_5rem_7rem_2.5rem] gap-2 items-center rounded-md px-2 py-1.5 border">
+        <div className="grid grid-cols-[1fr_1fr_5rem_10rem_2.5rem] gap-2 items-center rounded-md px-2 py-1.5 border">
             <Input value={item.name} onChange={(e) => updateItem(item.id, { name: e.currentTarget.value })}></Input>
             <Input value={item.description} onChange={(e) => updateItem(item.id, { description: e.currentTarget.value })}></Input>
             <Input value={item.quantity} onChange={(e) => updateItem(item.id, { quantity: parseFloat(e.currentTarget.value) || 0 })}></Input>
-            <ButtonGroup>
-                <Select value={currency} onValueChange={setCurrency}>
-                    <SelectTrigger>{currency}</SelectTrigger>
-                    <SelectContent className="min-w-24">
-                        <SelectGroup>
-                            {CURRENCIES.map((currency) => (
-                                <SelectItem key={currency.value} value={currency.value}>
-                                    {currency.value}{" "}
-                                    <span>
-                                        {currency.label}
-                                    </span>
-                                </SelectItem>
-                            ))}
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
+            <ButtonGroup className="flex items-center">
+                <Popover open={openCurrency} onOpenChange={setOpenCurrency}>
+                    <PopoverTrigger className="min-w-fit shrink-0" asChild>
+                        <Button variant={"outline"}>
+                            {currency} <ChevronDown></ChevronDown>
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent align="start">
+                        <Command>
+                            <CommandGroup heading="Available Currencies">
+                                {CURRENCIES.map((c) => (
+                                    <CommandItem key={c.value} value={c.value} onSelect={(e) => {
+                                        setCurrency(c.value);
+                                        handleChangeCurrency(c.code);
+                                        setOpenCurrency(false);
+                                    }}>
+                                        {c.value + "  " + c.label}
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
+                        </Command>
+                    </PopoverContent>
+                </Popover>
                 <Input value={item.rate} onChange={(e) => updateItem(item.id, { rate: parseFloat(e.currentTarget.value) || 0 })}></Input>
-
             </ButtonGroup>
             <Button variant="destructive" onClick={() => removeItem(item.id)}>
                 <Trash2></Trash2>
@@ -291,7 +381,7 @@ function LineItemsSections() {
         <div>
             <p className="text-xl font-bold">Items</p>
             <div className="flex flex-col gap-2">
-                <div className="grid grid-cols-[1fr_2fr_5rem_rem_2.5rem] gap-2 px-1">
+                <div className="grid grid-cols-[1fr_1fr_5rem_10rem_2.5rem] gap-2 px-1">
                     {["Name", "Description", "Quantity", "Rate", ""].map((h) => (
                         <span key={h} className="text-[10px] uppercase tracking-widest font-medium">{h}</span>
                     ))}
@@ -312,7 +402,7 @@ function FinancialsSection() {
     const discountRate = useInvoiceStore((s) => s.invoice.discountRate);
     const updateInvoice = useInvoiceStore((s) => s.updateInvoice);
 
-    const handleChange = (key: keyof InvoiceData, e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (key: keyof InvoiceData, e: any) => {
         updateInvoice({
             [key]: parseFloat(e.currentTarget.value)
         })
@@ -324,11 +414,21 @@ function FinancialsSection() {
             <div className="grid grid-cols-2 gap-3">
                 <Field>
                     <FieldLabel>Discount (%)</FieldLabel>
-                    <Input value={discountRate} onChange={(e) => handleChange('discountRate', e)}></Input>
+                    <Input type="number" value={discountRate} onChange={(e) => {
+                        const num = Number(e.currentTarget.value.replace(/\D/g, ""));
+                        if (num >= 0) {
+                            handleChange('discountRate', num)
+                        }
+                    }}></Input>
                 </Field>
                 <Field>
                     <FieldLabel>Tax / VAT (%)</FieldLabel>
-                    <Input value={taxRate} onChange={(e) => handleChange('taxRate', e)}></Input>
+                    <Input type="number" value={taxRate} onChange={(e) => {
+                        const num = Number(e.currentTarget.value.replace(/\D/g, ""));
+                        if (num >= 0) {
+                            handleChange('taxRate', num)
+                        }
+                    }}></Input>
                 </Field>
             </div>
         </div>

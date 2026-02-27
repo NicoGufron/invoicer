@@ -7,7 +7,7 @@ export default function InvoicePreview() {
     const invoice = useInvoiceStore((s) => s.invoice);
     // const { subtotal, discountAmt, taxAmt, total } = useInvoiceTotals();
 
-    const { items, taxRate, discountRate } = invoice;
+    const { items, taxRate, discountRate, currency } = invoice;
     const subtotal = items.reduce((sum, i) => sum + i.quantity * i.rate, 0);
     const discountAmt = subtotal * (discountRate / 100);
     const taxableAmt = subtotal - discountAmt;
@@ -29,8 +29,11 @@ export default function InvoicePreview() {
                             <div className="text-xs text-[#888] mt-1 whitespace-pre-wrap leading-relaxed">
                                 {invoice.companyAddress}
                             </div>
+                            {invoice.companyNumber && (
+                                <div className="text-xs text-[#888]">Tel: {invoice.companyNumber}</div>
+                            )}
                             {invoice.companyEmail && (
-                                <div className="text-xs text-[#888]">{invoice.companyEmail}</div>
+                                <div className="text-xs text-[#888]">Email: {invoice.companyEmail}</div>
                             )}
                         </div>
                         <div className="text-right">
@@ -59,14 +62,17 @@ export default function InvoicePreview() {
                         </div>
                         <div className="font-semibold text-base mb-0.5">{invoice.clientName || "—"}</div>
                         <div className="text-xs text-[#666] whitespace-pre-wrap leading-relaxed">{invoice.clientAddress}</div>
+                        {invoice.clientNumber && (
+                            <div className="text-xs text-[#666]">Tel: {invoice.clientNumber}</div>
+                        )}
                         {invoice.clientEmail && (
-                            <div className="text-xs text-[#666]">{invoice.clientEmail}</div>
+                            <div className="text-xs text-[#666]">Email: {invoice.clientEmail}</div>
                         )}
                     </div>
                     <table className="w-full mb-6 text-sm">
                         <thead>
                             <tr className="border-b-2 border-primary">
-                                {["Name", "Description", "Qty", "Rate", "Amount"].map((h, i) => (
+                                {["Name", "Description", "Quantity", "Rate", "Amount"].map((h, i) => (
                                     <th
                                         key={h}
                                         className={`pb-2 text-[10px] uppercase tracking-[0.13em] text-primary font-semibold ${i <= 1 ? "text-left" : "text-right"
@@ -89,9 +95,9 @@ export default function InvoicePreview() {
                                     <tr key={item.id} className="border-b border-[#f0f0f0]">
                                         <td className="py-3 pr-4 text-[#333]">{item.name || "—"}</td>
                                         <td className="py-3 pr-4 text-[#333]">{item.description || "—"}</td>
-                                        <td className="py-3 text-right text-[#555]">{item.quantity}</td>
-                                        <td className="py-3 text-right text-[#555]">{fmt(item.rate)}</td>
-                                        <td className="py-3 text-right font-medium">{fmt(item.quantity * item.rate)}</td>
+                                        <td className="py-3 text-center text-[#555]">{item.quantity}</td>
+                                        <td className="py-3 text-right text-[#555]">{fmt(item.rate, currency)}</td>
+                                        <td className="py-3 text-right font-medium">{fmt(item.quantity * item.rate, currency)}</td>
                                     </tr>
                                 ))
                             )}
@@ -102,23 +108,23 @@ export default function InvoicePreview() {
                         <div className="w-56 text-sm">
                             <div className="flex justify-between py-1.5 text-[#666]">
                                 <span>Subtotal</span>
-                                <span>{fmt(subtotal)}</span>
+                                <span>{fmt(subtotal, currency)}</span>
                             </div>
                             {invoice.discountRate > 0 && (
                                 <div className="flex justify-between py-1.5 text-[#666]">
                                     <span>Discount ({invoice.discountRate}%)</span>
-                                    <span className="text-green-600">−{fmt(discountAmt)}</span>
+                                    <span className="text-green-600">−{fmt(discountAmt, currency)}</span>
                                 </div>
                             )}
                             {invoice.taxRate > 0 && (
                                 <div className="flex justify-between py-1.5 text-[#666]">
                                     <span>Tax ({invoice.taxRate}%)</span>
-                                    <span>{fmt(taxAmt)}</span>
+                                    <span>{fmt(taxAmt, currency)}</span>
                                 </div>
                             )}
                             <div className="flex justify-between py-3 mt-1 border-t-2 border-[#1a1a1a] font-semibold text-base">
                                 <span>Total Due</span>
-                                <span className="text-primary">{fmt(total)}</span>
+                                <span className="text-primary">{fmt(total, currency)}</span>
                             </div>
                         </div>
                     </div>
