@@ -6,6 +6,8 @@ export interface LineItem {
     name: string,
     description: string,
     quantity: number,
+    discountType: "percentage" | "nominal",
+    discount: number,
     rate: number,
 }
 
@@ -46,7 +48,15 @@ const defaultInvoice: InvoiceData = {
     issueDate: new Date().toISOString().split("T")[0],
     dueDate: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
     logoUrl: null,
-    items: [{ id: uid(), name: "Item", description: "Service or product", quantity: 1, rate: 100 }],
+    items: [{ 
+        id: uid(), 
+        name: "Item", 
+        description: "Service or product", 
+        discountType: "percentage",
+        quantity: 1, 
+        discount: 0,
+        rate: 100 
+    }],
     taxRate: 0,
     discountRate: 0,
     notes: "Thank you for your business!",
@@ -87,8 +97,15 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
             invoice: {
                 ...state.invoice,
                 items: [
-                    ...state.invoice.items,
-                    { id: uid(), name: "", description: "", quantity: 1, rate: 0 }
+                    ...state.invoice.items, { 
+                        id: uid(), 
+                        name: "", 
+                        description: "", 
+                        quantity: 1, 
+                        discountType: "percentage",
+                        discount: 0,
+                        rate: 0 
+                    }
                 ]
             }
         }))

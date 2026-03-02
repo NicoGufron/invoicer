@@ -1,18 +1,36 @@
 "use client";
 
 import { fmt, formatDate } from "@/lib/utils";
-import { useInvoiceStore } from "../stores/invoice.store";
+import { LineItem, useInvoiceStore } from "../stores/invoice.store";
 
 export default function InvoicePreview() {
     const invoice = useInvoiceStore((s) => s.invoice);
     // const { subtotal, discountAmt, taxAmt, total } = useInvoiceTotals();
 
     const { items, taxRate, discountRate, currency } = invoice;
+    // const discountAmt = subtotal * (discountRate / 100);
+    // const taxableAmt = subtotal - discountAmt;
+
+    const itemAmount = (item: LineItem) => {
+        const gross = item.quantity * item.rate;
+        if (item.discount === 0) return gross;
+
+        const discountAmt = item.discountType === "percentage" ? gross * (item.discount / 100) : item.discount
+        return gross - discountAmt;
+    }
+
     const subtotal = items.reduce((sum, i) => sum + i.quantity * i.rate, 0);
-    const discountAmt = subtotal * (discountRate / 100);
-    const taxableAmt = subtotal - discountAmt;
-    const taxAmt = taxableAmt * (taxRate / 100);
-    const total = taxableAmt + taxAmt;
+    const totalDiscounts = items.reduce((sum, i) => {
+        const gross = i.quantity * i.rate;
+        if (i.discount === 0) return sum;
+        const discountAmt = i.discountType === "percentage" ? gross * (i.discount / 100) : i.discount
+
+        return sum + discountAmt;
+    }, 0)
+
+    const afterDiscount = subtotal - totalDiscounts;
+    const taxAmt = afterDiscount * (taxRate / 100);
+    const total = afterDiscount + taxAmt;
 
     return (
         <div className="bg-white w-[680px] min-h-[900px] flex flex-col text-[#1a1a1a] overflow-hidden">
@@ -72,11 +90,11 @@ export default function InvoicePreview() {
                     <table className="w-full mb-6 text-sm">
                         <thead>
                             <tr className="border-b-2 border-primary">
-                                {["Name", "Description", "Quantity", "Rate", "Amount"].map((h, i) => (
+                                {["Name", "Description", "Quantity", "Discount", "Rate", "Amount"].map((h, i) => (
                                     <th
                                         key={h}
                                         className={`pb-2 text-[10px] uppercase tracking-[0.13em] text-primary font-semibold ${i <= 1 ? "text-left" : "text-right"
-                                            } ${i === 0 ? "w-32" : i === 1 ? "" : i === 2 ? "w-16" : i >= 3 ? "w-24" : ""}`}
+                                            } ${i === 0 ? "w-36" : i === 1 ? "w-36" : i === 2 ? "w-16" : i >= 3 ? "w-24" : ""}`}
                                     >
                                         {h}
                                     </th>
@@ -92,12 +110,22 @@ export default function InvoicePreview() {
                                 </tr>
                             ) : (
                                 invoice.items.map((item) => (
-                                    <tr key={item.id} className="border-b border-[#f0f0f0]">
+                                    <tr key={item.id} className="border-b text-xs border-[#f0f0f0]">
                                         <td className="py-3 pr-4 text-[#333]">{item.name || "—"}</td>
                                         <td className="py-3 pr-4 text-[#333]">{item.description || "—"}</td>
                                         <td className="py-3 text-center text-[#555]">{item.quantity}</td>
+                                        <td className="py-3 text-center text-[#555]">
+                                            {item.discount > 0 ? item.discountType === "percentage" ? `${item.discount}%` : fmt(item.discount, currency) : "--"}
+                                        </td>
                                         <td className="py-3 text-right text-[#555]">{fmt(item.rate, currency)}</td>
-                                        <td className="py-3 text-right font-medium">{fmt(item.quantity * item.rate, currency)}</td>
+                                        <td className="py-3 text-right font-medium">
+                                            {item.discount > 0 && (
+                                                <span className="line-through text-[#bbb] mr-1.5 font-normal">
+                                                    {fmt(item.quantity * item.rate, currency)}
+                                                </span>
+                                            )}
+                                            {fmt(itemAmount(item), currency)}
+                                        </td>
                                     </tr>
                                 ))
                             )}
@@ -110,7 +138,13 @@ export default function InvoicePreview() {
                                 <span>Subtotal</span>
                                 <span>{fmt(subtotal, currency)}</span>
                             </div>
-                            {invoice.discountRate > 0 && (
+                            {totalDiscounts > 0 && (
+                                <div className="flex justify-between py-1.5 text-[#666]">
+                                    <span>Discounts</span>
+                                    <span>-{fmt(totalDiscounts, currency)}</span>
+                                </div>
+                            )}
+                            {/* {invoice.discountRate > 0 && (
                                 <div className="flex justify-between py-1.5 text-[#666]">
                                     <span>Discount ({invoice.discountRate}%)</span>
                                     <span className="text-green-600">−{fmt(discountAmt, currency)}</span>
@@ -121,7 +155,7 @@ export default function InvoicePreview() {
                                     <span>Tax ({invoice.taxRate}%)</span>
                                     <span>{fmt(taxAmt, currency)}</span>
                                 </div>
-                            )}
+                            )} */}
                             <div className="flex justify-between py-3 mt-1 border-t-2 border-[#1a1a1a] font-semibold text-base">
                                 <span>Total Due</span>
                                 <span className="text-primary">{fmt(total, currency)}</span>

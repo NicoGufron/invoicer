@@ -19,9 +19,9 @@ export default async function Home() {
                 <div className="grid grid-cols-3 mt-3 space-x-5">
 
                     <Item variant={"outline"} className="bg-white" asChild>
-                        <Link href="/dashboard/generate">
+                        <Link href="/dashboard/invoice/create">
                             <ItemContent>
-                                <ItemTitle>Generate Invoice</ItemTitle>
+                                <ItemTitle>Create New Invoice</ItemTitle>
                                 {/* <ItemDescription>This one speaks for itself</ItemDescription> */}
                             </ItemContent>
                             <ItemActions>
