@@ -2,9 +2,11 @@
 
 import { fmt, formatDate } from "@/lib/utils";
 import { LineItem, useInvoiceStore } from "../stores/invoice.store";
+import { useEffect } from "react";
 
 export default function InvoicePreview() {
     const invoice = useInvoiceStore((s) => s.invoice);
+    const updateInvoice = useInvoiceStore((s) => s.updateInvoice);
     // const { subtotal, discountAmt, taxAmt, total } = useInvoiceTotals();
 
     const { items, taxRate, discountRate, currency } = invoice;
@@ -31,6 +33,12 @@ export default function InvoicePreview() {
     const afterDiscount = subtotal - totalDiscounts;
     const taxAmt = afterDiscount * (taxRate / 100);
     const total = afterDiscount + taxAmt;
+
+    useEffect(() => {
+        updateInvoice({
+            ['totalAmount'] : total
+        })
+    }, [total]);
 
     return (
         <div className="bg-white w-[680px] min-h-[900px] flex flex-col text-[#1a1a1a] overflow-hidden">
@@ -163,7 +171,7 @@ export default function InvoicePreview() {
                         </div>
                     </div>
                     {(invoice.notes || invoice.terms) && (
-                        <div className="mt-auto pt-6 border-t border-[#ebebeb] grid grid-cols-2 gap-8 text-xs">
+                        <div className="mt-auto py-6 border-t border-[#ebebeb] grid grid-cols-2 gap-8 text-xs">
                             {/* {invoice.notes && ( */}
                             <div>
                                 <div className="text-[10px] uppercase tracking-[0.13em] text-[#aaa] mb-1.5">Notes</div>

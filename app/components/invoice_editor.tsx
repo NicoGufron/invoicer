@@ -17,12 +17,30 @@ import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "@
 import { cn } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useAuthStore } from "../stores/auth.store";
+import { toast } from "sonner";
 
 interface Props {
     user: any
 }
 
 export default function InvoiceEditor({ user }: Props) {
+
+    const invoice = useInvoiceStore((s) => s.invoice);
+    const resetInvoice = useInvoiceStore((s) => s.resetInvoice);
+    const saveDraft = useInvoiceStore((s) => s.saveDraftInvoice);
+    const handleSaveDraft = async () => {
+        const res = await saveDraft();
+
+        if (res) {
+            toast.success("Invoice succesfully saved as draft");
+        }
+
+    }
+
+    useEffect(() => {
+        resetInvoice();
+    }, [resetInvoice])
 
     return (
         <div className="flex flex-col gap-6 overflow-y-auto p-5 h-full">
@@ -44,11 +62,13 @@ export default function InvoiceEditor({ user }: Props) {
                 <DropdownMenuTrigger asChild>
                     <Button className="bg-[#25343F] w-1/4">Save Invoice <ChevronDown /></Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
+                <DropdownMenuContent align="start">
                     <DropdownMenuGroup>
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem><Send></Send>Save and Send</DropdownMenuItem>
-                        <DropdownMenuItem><NotepadTextDashed></NotepadTextDashed>Save as Draft</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => {
+                            handleSaveDraft();
+                        }}><NotepadTextDashed></NotepadTextDashed>Save as Draft</DropdownMenuItem>
                     </DropdownMenuGroup>
                 </DropdownMenuContent>
             </DropdownMenu>
@@ -142,10 +162,10 @@ function SenderSection({ user }: any) {
 }
 
 function ClientSection() {
-    const clientName = useInvoiceStore((s) => s.invoice.clientName);
-    const clientEmail = useInvoiceStore((s) => s.invoice.clientEmail);
-    const clientAddress = useInvoiceStore((s) => s.invoice.clientAddress);
-    const clientNumber = useInvoiceStore((s) => s.invoice.clientNumber);
+    // const clientName = useInvoiceStore((s) => s.invoice.clientName);
+    // const clientEmail = useInvoiceStore((s) => s.invoice.clientEmail);
+    // const clientAddress = useInvoiceStore((s) => s.invoice.clientAddress);
+    // const clientNumber = useInvoiceStore((s) => s.invoice.clientNumber);
     const updateInvoice = useInvoiceStore((s) => s.updateInvoice);
 
     const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
@@ -200,6 +220,7 @@ function ClientSection() {
                                 {partners.map((partner) => (
                                     <CommandItem key={partner.id} keywords={[partner.name]} onSelect={(e) => {
                                         setSelectedPartner(partner);
+                                        handleChangePartner("partnerId", partner.id);
                                         setOpenPartner(false);
                                     }}>
                                         <span className="flex flex-col">
@@ -218,7 +239,7 @@ function ClientSection() {
                 {/* <p>or</p> */}
                 <Button className="w-1/4 bg-[#25343F]">Create new Partner</Button>
             </div>
-            <hr className="my-5"></hr>
+            {/* <hr className="my-5"></hr>
             <div className="flex flex-col gap-3">
                 <FieldGroup>
 
@@ -239,7 +260,7 @@ function ClientSection() {
                         <Textarea value={clientEmail} onChange={(e) => handleChange('clientEmail', e)}></Textarea>
                     </Field>
                 </FieldGroup>
-            </div>
+            </div> */}
         </div>
     );
 }
