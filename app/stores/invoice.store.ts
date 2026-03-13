@@ -29,7 +29,7 @@ export interface InvoiceData {
     clientNumber?: string,
     logoUrl: string | null,
     items: LineItem[];
-    taxRate: number;
+    // taxRate: number;
     totalAmount: number,
     discountRate: number;
     notes: string,
@@ -58,19 +58,39 @@ const defaultInvoice: InvoiceData = {
     logoUrl: null,
     items: [{
         id: uid(),
-        name: "Item",
-        description: "Service or product",
+        name: "",
+        description: "",
         discountType: "percentage",
         quantity: 1,
         discount: 0,
         rate: 100
     }],
-    taxRate: 0,
+    // taxRate: 0,
     discountRate: 0,
-    notes: "Thank you for your business!",
-    terms: "Payment due within 30 days of invoice date.",
+    notes: "",
+    terms: "",
     currency: "USD",
 }
+
+const mappingInvoice = (raw: any): InvoiceData => ({
+    invoiceNumber: raw.invoice_number,
+    userId: raw.user_id,
+    issueDate: raw.issue_date,
+    dueDate: raw.due_date,
+    companyName: raw.company_name,
+    companyAddress: raw.company_address,
+    companyEmail: raw.company_email,
+    companyNumber: raw.company_number,
+    partnerId: raw.partner_id,
+    logoUrl: raw.logo_url,
+    items: raw.items,
+    // taxRate: raw.tax_rate,
+    totalAmount: raw.total_amount,
+    discountRate: raw.discount_rate,
+    notes: raw.notes,
+    terms: raw.terms,
+    currency: raw.currency,
+})
 
 export type CreateInvoicePayload = Omit<InvoiceData, 'id' | 'created_at' | 'updated_at'>
 interface InvoiceStore {
@@ -88,11 +108,12 @@ interface InvoiceStore {
 
     resetInvoice: () => void;
 
-    saveDraftInvoice: () => Promise<boolean>;
+    saveDraftInvoice: (id?: string) => Promise<boolean>;
     saveAndSendInvoice: (payload: InvoiceData, email: string) => void;
     deleteInvoice: (invoiceId: number) => Promise<boolean>;
 
     getInvoices: () => void;
+    getInvoice: (id: string) => void;
 }
 
 
@@ -160,12 +181,19 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
         set({ invoice: defaultInvoice })
     },
 
-    saveDraftInvoice: async () => {
+    saveDraftInvoice: async (id) => {
         const supabase = createClient();
         set({ isLoading: true });
 
+        try {
+
         const { invoice } = useInvoiceStore.getState();
         const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            toast.error("You must be logged in");
+            return false;
+        }
 
         const payload = {
             user_id: user?.id,
@@ -182,15 +210,24 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
             company_email: invoice.companyEmail,
             company_number: invoice.companyNumber,
             logo_url: invoice.logoUrl,
+            total_amount: invoice.totalAmount,
+            updated_at: new Date().toISOString()
         }
 
-        try {
-            const { error } = await supabase.from("invoices").insert(payload);
+            if (!id) {
 
-            if (error) {
-                throw error;
+                const { error } = await supabase.from("invoices").insert(payload);
+
+                if (error) throw error;
+                toast.success("Draft saved!");
+            } else {
+                const { error } = await supabase.from("invoices").update(payload).eq('id', id).eq('user_id', user?.id);
+
+                if (error) throw error;
+
+                toast.success("Draft updated!");
+
             }
-
             return true;
         } catch (err: any) {
             toast.error(err.message);
@@ -208,7 +245,7 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
         const supabase = createClient();
         set({ isLoading: true });
 
-        const { data: { user }} = await supabase.auth.getUser();
+        const { data: { user } } = await supabase.auth.getUser();
 
         try {
             const { data, error } = await supabase.from('invoices')
@@ -219,7 +256,7 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
                     address,
                     phone
                 )
-            `).eq("user_id", user?.id).order("created_at", {ascending: false});
+            `).eq("user_id", user?.id).order("created_at", { ascending: false });
 
             if (error) {
                 throw error;
@@ -234,9 +271,30 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
         }
     },
 
+    getInvoice: async (id) => {
+        const supabase = createClient();
+
+        const { data: { user } } = await supabase.auth.getUser();
+
+        try {
+            const { data, error } = await supabase.from('invoices')
+                .select(`*`).eq("user_id", user?.id).eq("id", id).single();
+
+            if (error) {
+                throw error;
+            }
+
+            const mappedData = mappingInvoice(data);
+
+            set({ invoice: mappedData });
+        } catch (err: any) {
+
+        }
+    },
+
     deleteInvoice: async (invoiceId) => {
         const supabase = createClient();
-        set({isLoading: true});
+        set({ isLoading: true });
 
         try {
             const { error } = await supabase.from('invoices').delete().eq('id', invoiceId);

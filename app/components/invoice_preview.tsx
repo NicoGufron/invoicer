@@ -9,7 +9,7 @@ export default function InvoicePreview() {
     const updateInvoice = useInvoiceStore((s) => s.updateInvoice);
     // const { subtotal, discountAmt, taxAmt, total } = useInvoiceTotals();
 
-    const { items, taxRate, discountRate, currency } = invoice;
+    const { items, discountRate, currency } = invoice;
     // const discountAmt = subtotal * (discountRate / 100);
     // const taxableAmt = subtotal - discountAmt;
 
@@ -31,8 +31,8 @@ export default function InvoicePreview() {
     }, 0)
 
     const afterDiscount = subtotal - totalDiscounts;
-    const taxAmt = afterDiscount * (taxRate / 100);
-    const total = afterDiscount + taxAmt;
+    // const taxAmt = afterDiscount * (taxRate / 100);
+    const total = afterDiscount;
 
     useEffect(() => {
         updateInvoice({
@@ -41,7 +41,7 @@ export default function InvoicePreview() {
     }, [total]);
 
     return (
-        <div className="bg-white w-[680px] min-h-[900px] flex flex-col text-[#1a1a1a] overflow-hidden">
+        <div className="bg-white w-[680px] min-h-[1200px] flex flex-col text-[#1a1a1a] overflow-hidden">
             <div className="h-1.5 w-full bg-primary flex-shrink-0">
                 <div className="flex flex-col flex-1 p-14">
                     <div className="flex justify-between items-start mb-12">
@@ -144,12 +144,12 @@ export default function InvoicePreview() {
                         <div className="w-56 text-sm">
                             <div className="flex justify-between py-1.5 text-[#666]">
                                 <span>Subtotal</span>
-                                <span>{fmt(subtotal, currency)}</span>
+                                <span className="font-bold">{fmt(subtotal, currency)}</span>
                             </div>
                             {totalDiscounts > 0 && (
                                 <div className="flex justify-between py-1.5 text-[#666]">
                                     <span>Discounts</span>
-                                    <span>-{fmt(totalDiscounts, currency)}</span>
+                                    <span className="font-bold">-{fmt(totalDiscounts, currency)}</span>
                                 </div>
                             )}
                             {/* {invoice.discountRate > 0 && (

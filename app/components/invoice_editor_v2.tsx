@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { InvoiceData, LineItem, useInvoiceStore } from "../stores/invoice.store";
 import { Input } from "@/components/ui/input";
-import { Check, ChevronDown, ChevronDownIcon, NotepadTextDashed, Plus, Send, Trash2, Upload, X } from "lucide-react";
+import { Check, ChevronDown, ChevronDownIcon, FileJson, NotepadTextDashed, Plus, Send, Trash2, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,7 +25,7 @@ interface Props {
     id?: string,
 }
 
-export default function InvoiceEditor({ user, id }: Props) {
+export default function InvoiceEditorV2({ user, id }: Props) {
 
     const invoice = useInvoiceStore((s) => s.invoice);
     // const editInvoice = useInvoiceStore((s) => s.invoice);
@@ -52,22 +52,39 @@ export default function InvoiceEditor({ user, id }: Props) {
     }, [id])
 
     return (
-        <div className="flex flex-col gap-6 overflow-y-auto p-5 h-full">
-            <LogoSection></LogoSection>
+        <div className="flex flex-col gap-6 p-5">
+            <div className="flex flex-row gap-5 items-center justify-end">
+                <Button variant="outline">Save as Draft</Button>
+                {/* <Button variant="outline">Send Invoice</Button> */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant={"outline"}>Export As<ChevronDown></ChevronDown></Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start">
+                        {/* <DropdownMenuLabel>Export as:</DropdownMenuLabel> */}
+                        <DropdownMenuItem><NotepadTextDashed></NotepadTextDashed>PDF</DropdownMenuItem>
+                        <DropdownMenuItem><FileJson></FileJson>JSON</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+            </div>
             <hr></hr>
+            <LogoSection></LogoSection>
+            {/* <hr></hr> */}
             <MetaSection></MetaSection>
             <hr></hr>
-            <SenderSection user={user}></SenderSection>
-            <hr></hr>
-            <ClientSection></ClientSection>
+            <div className="grid md:grid-cols-2 grid-cols-1 space-x-15">
+                <SenderSection user={user}></SenderSection>
+                <ClientSection></ClientSection>
+            </div>
             <hr></hr>
             <LineItemsSections></LineItemsSections>
             <hr></hr>
             {/* <FinancialsSection></FinancialsSection>
             <hr></hr> */}
             <NotesSection></NotesSection>
-            <hr></hr>
-            <DropdownMenu>
+            {/* <hr></hr> */}
+            {/* <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button className="bg-[#25343F] w-1/4">Save Invoice <ChevronDown /></Button>
                 </DropdownMenuTrigger>
@@ -80,7 +97,7 @@ export default function InvoiceEditor({ user, id }: Props) {
                         }}><NotepadTextDashed></NotepadTextDashed>Save as Draft</DropdownMenuItem>
                     </DropdownMenuGroup>
                 </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
         </div>
     );
 }
@@ -100,12 +117,12 @@ function LogoSection() {
 
     return (
         <div>
-            <p className="font-bold text-xl">Upload Logo</p>
+            <p className="font-bold text-xl mb-5">Upload Logo</p>
             <Input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile}></Input>
             {
                 logoUrl ? (
                     <div className="relative w-fit">
-                        <img src="logoUrl" alt="logo" className="h-14 object-contain rounded border border-border"></img>
+                        <img src={logoUrl} alt="logo" className="h-50 w-50 object-cover rounded border border-border"></img>
                         <button
                             onClick={() => setLogo(null)}
                             className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full w-5 h-5 flex items-center justify-center"
@@ -114,9 +131,12 @@ function LogoSection() {
                         </button>
                     </div>
                 ) : (
-                    <Button variant="outline" className="gap-2 border-dashed" onClick={() => fileRef.current?.click()}>
-                        <Upload></Upload> Upload logo
-                    </Button>
+                    <div className="h-50 w-50 border-2 border-dashed flex flex-col items-center justify-center">
+
+                        <Button variant="outline" onClick={() => fileRef.current?.click()}>
+                            <Upload></Upload> Upload logo
+                        </Button>
+                    </div>
                 )
             }
         </div>
@@ -171,10 +191,10 @@ function SenderSection({ user }: any) {
 }
 
 function ClientSection() {
-    // const clientName = useInvoiceStore((s) => s.invoice.clientName);
-    // const clientEmail = useInvoiceStore((s) => s.invoice.clientEmail);
-    // const clientAddress = useInvoiceStore((s) => s.invoice.clientAddress);
-    // const clientNumber = useInvoiceStore((s) => s.invoice.clientNumber);
+    const clientName = useInvoiceStore((s) => s.invoice.clientName);
+    const clientEmail = useInvoiceStore((s) => s.invoice.clientEmail);
+    const clientAddress = useInvoiceStore((s) => s.invoice.clientAddress);
+    const clientNumber = useInvoiceStore((s) => s.invoice.clientNumber);
     const invoice = useInvoiceStore((s) => s.invoice);
     const updateInvoice = useInvoiceStore((s) => s.updateInvoice);
 
@@ -223,39 +243,42 @@ function ClientSection() {
 
     return (
         <div>
-            <p className="text-xl font-bold">Bill To</p>
-            <div className="flex flex-col items-start justify-end mt-5 gap-5">
-                <Popover open={openPartner} onOpenChange={setOpenPartner}>
-                    <PopoverTrigger asChild>
-                        <Button className="w-1/2 flex-1 justify-between" variant="outline">{selectedPartner?.name ?? "Choose Partner"}<ChevronDown></ChevronDown></Button>
-                    </PopoverTrigger>
-                    <PopoverContent align="start">
-                        <Command>
-                            <CommandInput></CommandInput>
-                            <CommandList>
-                                {partners.map((partner) => (
-                                    <CommandItem key={partner.id} keywords={[partner.name]} onSelect={(e) => {
-                                        setSelectedPartner(partner);
-                                        handleChangePartner("partnerId", partner.id);
-                                        setOpenPartner(false);
-                                    }}>
-                                        <span className="flex flex-col">
-                                            <p>{partner.name}</p>
-                                            <p className="text-xs">{partner.phone}</p>
-                                            <p className="text-xs">{partner.email}</p>
+            <p className="text-xl font-bold flex-1">Client Details</p>
+            <div className="flex flex-row items-end justify-between gap-5 mt-5">
+                <Field className="w-2/4 ">
+                    <FieldLabel>Choose Partner</FieldLabel>
+                    <Popover open={openPartner} onOpenChange={setOpenPartner}>
+                        <PopoverTrigger asChild>
+                            <Button className="justify-between" variant="outline">{selectedPartner?.name ?? "Choose Partner"}<ChevronDown></ChevronDown></Button>
+                        </PopoverTrigger>
+                        <PopoverContent align="start">
+                            <Command>
+                                <CommandInput></CommandInput>
+                                <CommandList>
+                                    {partners.map((partner) => (
+                                        <CommandItem key={partner.id} keywords={[partner.name]} onSelect={(e) => {
+                                            setSelectedPartner(partner);
+                                            handleChangePartner("partnerId", partner.id);
+                                            setOpenPartner(false);
+                                        }}>
+                                            <span className="flex flex-col">
+                                                <p>{partner.name}</p>
+                                                <p className="text-xs">{partner.phone}</p>
+                                                <p className="text-xs">{partner.email}</p>
 
-                                        </span>
-                                        <Check className={cn("ml-auto", selectedPartner?.name === partner.name ? "opacity-100" : "opacity-0")}></Check>
-                                    </CommandItem>
-                                ))}
-                            </CommandList>
-                        </Command>
-                    </PopoverContent>
-                </Popover>
+                                            </span>
+                                            <Check className={cn("ml-auto", selectedPartner?.name === partner.name ? "opacity-100" : "opacity-0")}></Check>
+                                        </CommandItem>
+                                    ))}
+                                </CommandList>
+                            </Command>
+                        </PopoverContent>
+                    </Popover>
+                </Field>
                 {/* <p>or</p> */}
                 <Button className="w-1/4 bg-[#25343F]">Create new Partner</Button>
             </div>
-            {/* <hr className="my-5"></hr>
+            <hr className="my-5"></hr>
             <div className="flex flex-col gap-3">
                 <FieldGroup>
 
@@ -276,7 +299,7 @@ function ClientSection() {
                         <Textarea value={clientEmail} onChange={(e) => handleChange('clientEmail', e)}></Textarea>
                     </Field>
                 </FieldGroup>
-            </div> */}
+            </div>
         </div>
     );
 }
@@ -302,7 +325,7 @@ function MetaSection() {
         <div>
             <p className="text-xl font-bold">Invoice Details</p>
             <div className="flex flex-col gap-3 py-5">
-                <Field>
+                <Field className="w-1/2">
                     <FieldLabel>Invoice Number</FieldLabel>
                     <Input value={invoiceNumber ?? ""} onChange={(e) => handleChange("invoiceNumber", e)}></Input>
                 </Field>
@@ -317,7 +340,7 @@ function MetaSection() {
                                     <ChevronDownIcon></ChevronDownIcon>
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent align="center">
+                            <PopoverContent align="start">
                                 <Calendar
                                     mode="single"
                                     captionLayout="dropdown"
@@ -344,7 +367,7 @@ function MetaSection() {
                                     <ChevronDownIcon></ChevronDownIcon>
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent align="center">
+                            <PopoverContent align="start">
                                 <Calendar mode="single"
                                     captionLayout="dropdown"
                                     onSelect={(date) => {
@@ -412,13 +435,13 @@ function LineItemRow({ item }: { item: LineItem }) {
     return (
         <TableRow>
             <TableCell className="py-1.5 px-1">
-                <Input value={item.name} onChange={(e) => updateItem(item.id, { name: e.currentTarget.value })}></Input>
+                <Input value={item.name} placeholder="Item Name" onChange={(e) => updateItem(item.id, { name: e.currentTarget.value })}></Input>
             </TableCell>
             <TableCell className="py-1.5 px-1">
-                <Input value={item.description} onChange={(e) => updateItem(item.id, { description: e.currentTarget.value })}></Input>
+                <Input value={item.description} placeholder="Item Description" onChange={(e) => updateItem(item.id, { description: e.currentTarget.value })}></Input>
             </TableCell>
             <TableCell className="py-1.5 px-1">
-                <Input className="text-center w-full" value={item.quantity} onChange={(e) => updateItem(item.id, { quantity: parseFloat(e.currentTarget.value) || 0 })}></Input>
+                <Input className="text-center w-full" placeholder="Item Quantity" value={item.quantity} onChange={(e) => updateItem(item.id, { quantity: parseFloat(e.currentTarget.value) || 0 })}></Input>
             </TableCell>
             <TableCell className="py-1.5 px-1">
                 <ButtonGroup className="flex items-center">
@@ -428,7 +451,7 @@ function LineItemRow({ item }: { item: LineItem }) {
                                 {item.discountType === "percentage" ? "%" : currencySymbol} <ChevronDown></ChevronDown>
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent align="start">
+                        <PopoverContent align="start" className="w-full">
                             <Command>
                                 <CommandGroup heading="Available Options">
                                     <CommandItem onSelect={() => updateItem(item.id, { discountType: "percentage", discount: 0, })} value={"percentage"}>% (percentage)</CommandItem>
@@ -457,7 +480,7 @@ function LineItemRow({ item }: { item: LineItem }) {
                                 {currencySymbol} <ChevronDown></ChevronDown>
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent align="start">
+                        <PopoverContent align="start" className="w-full">
                             <Command>
                                 <CommandGroup heading="Available Currencies">
                                     {CURRENCIES.map((c) => (
@@ -506,14 +529,14 @@ function LineItemsSections() {
                     <Plus></Plus> Add Item
                 </Button>
             </div> */}
-            <Table>
+            <Table className="[&_th]:bg-[#25343F] [&_th]:text-white mt-5">
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-[180px]">Name</TableHead>
                         <TableHead>Description</TableHead>
-                        <TableHead className="text-center w-16">Qty</TableHead>
-                        <TableHead className="text-right w-36">Discount</TableHead>
-                        <TableHead className="text-right w-36">Rate</TableHead>
+                        <TableHead className="text-center w-24">Qty</TableHead>
+                        <TableHead className="text-right w-48">Discount</TableHead>
+                        <TableHead className="text-right w-48">Rate</TableHead>
                         <TableHead className="w-10" />
                     </TableRow>
                 </TableHeader>

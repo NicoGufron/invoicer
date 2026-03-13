@@ -4,7 +4,7 @@ import { create } from "zustand";
 export type PartnerType = 'client' | 'supplier' | 'both';
 
 export type Partner = {
-    id: string,
+    id: number,
     created_at: string,
     updated_at: string,
     user_id: number,

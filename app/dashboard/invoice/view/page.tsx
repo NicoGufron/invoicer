@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { formatDate } from "date-fns";
 import { ChevronDown, ChevronUp, Pencil, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -21,7 +22,9 @@ export default function ViewInvoices() {
 
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
-    const handleDelete = async (invoiceId : number) => {
+    const router = useRouter();
+
+    const handleDelete = async (invoiceId: number) => {
         const res = await deleteInvoice(invoiceId);
 
         if (res) {
@@ -84,8 +87,8 @@ export default function ViewInvoices() {
             cell: ({ row }) => {
                 const status = row.original.status;
                 return (
-                    <span className={`border-1 rounded-lg shadow-sm p-2 px-8 ${status === 'draft' ? "bg-gray-400 text-white" : ""}`}>
-                        {status === "draft" ? "Draft" : ""}
+                    <span className={`border-1 rounded-lg shadow-sm p-2 px-8 ${status === 'DRAFT' ? "bg-gray-400 text-white" : ""}`}>
+                        {status === "DRAFT" ? "Draft" : ""}
                     </span>
                 )
             }
@@ -105,7 +108,9 @@ export default function ViewInvoices() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
                                 <DropdownMenuGroup>
-                                    <DropdownMenuItem><Pencil />Edit Invoice</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => router.push(`./edit/${invoice.id}`)}>
+                                        <Pencil/>Edit Invoice
+                                    </DropdownMenuItem>
                                     <DropdownMenuSeparator></DropdownMenuSeparator>
                                     <DropdownMenuItem variant="destructive" onClick={() => {
                                         // deleteInvoice(invoice.id)
@@ -154,33 +159,35 @@ export default function ViewInvoices() {
     return (
         <section className="p-6 h-screen flex flex-col">
             <h1 className="text-2xl font-bold">View Invoices</h1>
-            <div className="bg-white rounded-lg border-1 border-gray-200 shadow-sm mt-5">
-                <Table className="[&_th]:px-6 [&_th]:py-3 [&_th]:text-gray-500 [&_th]:bg-gray-50 [&_td]:font-medium [&_td]:px-6 [&_td]:py-3 [&_th]:text-center text-center">
-                    <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>{headerGroup.headers.map((header) => (
-                                <TableHead key={header.id}>
-                                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                                </TableHead>
-                            ))}
+            <div className="w-full">
+                <div className="bg-white rounded-lg border-1 border-gray-200 shadow-sm mt-5">
+                    <Table className="[&_th]:px-6 [&_th]:py-3 [&_th]:text-gray-500 [&_th]:bg-gray-50 [&_td]:font-medium [&_td]:px-6 [&_td]:py-3 [&_th]:text-center text-center">
+                        <TableHeader>
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <TableRow key={headerGroup.id}>{headerGroup.headers.map((header) => (
+                                    <TableHead key={header.id}>
+                                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                                    </TableHead>
+                                ))}
 
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow className="*:border-border [&>:not(:last-child)]:border-r" key={row.id}>
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </TableCell>
-                                    ))}
                                 </TableRow>
-                            ))
-                        }
-                    </TableBody>
-                </Table>
+                            ))}
+                        </TableHeader>
+                        <TableBody>
+                            {
+                                table.getRowModel().rows.map((row) => (
+                                    <TableRow className="*:border-border [&>:not(:last-child)]:border-r" key={row.id}>
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id}>
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))
+                            }
+                        </TableBody>
+                    </Table>
+                </div>
             </div>
         </section>
     );
