@@ -2,7 +2,7 @@
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubItem } from "@/components/ui/sidebar";
-import { ChevronDown, FileText, Home, LogOut, User } from "lucide-react";
+import { ChevronDown, FileText, Home, LogOut, User, Users } from "lucide-react";
 import Link from "next/link";
 import { useAuthStore } from "../stores/auth.store";
 import { useRouter } from "next/navigation";
@@ -29,6 +29,14 @@ export function AppSidebar() {
                                     <Link href="/dashboard/home">
                                         <Home></Home>
                                         Home
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link href="/dashboard/profile">
+                                    <User></User>
+                                    Profile
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
@@ -65,7 +73,7 @@ export function AppSidebar() {
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild>
                                     <Link href="/dashboard/partner">
-                                        <User></User>
+                                        <Users></Users>
                                         Partners
                                     </Link>
                                 </SidebarMenuButton>
