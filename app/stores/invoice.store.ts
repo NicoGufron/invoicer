@@ -187,32 +187,32 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
 
         try {
 
-        const { invoice } = useInvoiceStore.getState();
-        const { data: { user } } = await supabase.auth.getUser();
+            const { invoice } = useInvoiceStore.getState();
+            const { data: { user } } = await supabase.auth.getUser();
 
-        if (!user) {
-            toast.error("You must be logged in");
-            return false;
-        }
+            if (!user) {
+                toast.error("You must be logged in");
+                return false;
+            }
 
-        const payload = {
-            user_id: user?.id,
-            invoice_number: invoice.invoiceNumber,
-            partner_id: invoice.partnerId,
-            issue_date: invoice.issueDate,
-            due_date: invoice.dueDate,
-            items: invoice.items,
-            notes: invoice.notes,
-            terms: invoice.terms,
-            status: "DRAFT",
-            company_name: invoice.companyName,
-            company_address: invoice.companyAddress,
-            company_email: invoice.companyEmail,
-            company_number: invoice.companyNumber,
-            logo_url: invoice.logoUrl,
-            total_amount: invoice.totalAmount,
-            updated_at: new Date().toISOString()
-        }
+            const payload = {
+                user_id: user?.id,
+                invoice_number: invoice.invoiceNumber,
+                partner_id: invoice.partnerId,
+                issue_date: invoice.issueDate,
+                due_date: invoice.dueDate,
+                items: invoice.items,
+                notes: invoice.notes,
+                terms: invoice.terms,
+                status: "DRAFT",
+                company_name: invoice.companyName,
+                company_address: invoice.companyAddress,
+                company_email: invoice.companyEmail,
+                company_number: invoice.companyNumber,
+                logo_url: invoice.logoUrl,
+                total_amount: invoice.totalAmount,
+                updated_at: new Date().toISOString()
+            }
 
             if (!id) {
 
