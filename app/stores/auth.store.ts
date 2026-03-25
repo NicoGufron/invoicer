@@ -70,6 +70,7 @@ export const useAuthStore = create<AuthStore>()(
                         data: {
                             fullName: metadata.fullName,
                             phoneNumber: metadata.phoneNumber,
+                            profileSetup: false,
                         }
                     }
                 })

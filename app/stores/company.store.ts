@@ -18,7 +18,13 @@ export interface CompanyData {
 interface Country {
     id: number,
     country_name: string,
-    short_name: string
+    short_name: string,
+    phone_prefix: string,
+}
+
+interface PhonePrefix {
+    short_name: string,
+    phone_prefix: string,
 }
 
 const mappingCompanyData = (raw: any) : CompanyData => ({
@@ -38,18 +44,21 @@ interface CompanyStore {
     isLoading: boolean;
     isUpdating: boolean;
     company: CompanyData | null;
+    phonePrefix: PhonePrefix[];
     countries: Country[];
 
     getCompany: () => void;
+    getCountryPhonePrefix: () => void;
     getCountries: () => void;
     updateCompany: (patch: Partial<CompanyData>) => void;
     saveCompanyUpdate: (id: number, company: Partial<CompanyData>) => Promise<boolean>;
 }
 
-export const useCompanyStore = create<CompanyStore>((set) => ({
+export const useCompanyStore = create<CompanyStore>((set, get) => ({
     isLoading: false,
     isUpdating: false,
     company: null,
+    phonePrefix: [],
     countries: [],
 
     getCompany: async () => {
@@ -92,6 +101,20 @@ export const useCompanyStore = create<CompanyStore>((set) => ({
         }
     },
 
+    getCountryPhonePrefix: async () => {
+        const supabase = createClient();
+        try {
+            const { data: countries, error } = await supabase.from('countries').select('phone_prefix, short_name');
+
+            if (error) throw error;
+            set({phonePrefix: countries});
+
+        } catch (err: any) {
+            toast.error(err.message);
+            return;
+        }
+    },
+
     updateCompany: (patch) => {
         set((state) => ({
             company: state.company ? {
@@ -120,6 +143,7 @@ export const useCompanyStore = create<CompanyStore>((set) => ({
                 company_type: company?.companyType,
                 company_email : company?.companyEmail,
                 company_phone_number: company?.companyPhoneNumber,
+                company_address: company?.companyAddress,
                 country: company?.country,
                 city: company?.city,
                 updated_at: new Date().toISOString()
@@ -128,6 +152,8 @@ export const useCompanyStore = create<CompanyStore>((set) => ({
             const { error } = await supabase.from("company_profile").update(payload).eq("id", id).eq("user_id", user.id)
             
             if (error) throw error;
+
+            get().updateCompany(company);
 
             toast.success("Company updated!");
             return true;

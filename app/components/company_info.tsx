@@ -4,10 +4,10 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Item, ItemMedia, ItemContent, ItemTitle, ItemDescription } from "@/components/ui/item";
 import { Info } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { useCompanyStore } from "../stores/company.store";
-import ChangeCompanyInfoDialog from "./change_company_info";
+import ChangeContactCompanyDrawer from "./change_contact_company";
+import ChangeCompanyInfoDrawer from "./change_company_info";
 
 export default function CompanyInfo() {
 
@@ -63,7 +63,7 @@ export default function CompanyInfo() {
                                     </Field>
                                 </div>
                             </div>
-                        <ChangeCompanyInfoDialog></ChangeCompanyInfoDialog>
+                        <ChangeCompanyInfoDrawer></ChangeCompanyInfoDrawer>
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="compcon">
@@ -77,7 +77,8 @@ export default function CompanyInfo() {
                                 <FieldLabel>Company Phone Number</FieldLabel>
                                 <p>{company?.companyPhoneNumber}</p>
                             </Field>
-                            <Button>Change Contact Information</Button>
+                            {/* <Button>Change Contact Information</Button> */}
+                            <ChangeContactCompanyDrawer></ChangeContactCompanyDrawer>
                         </AccordionContent>
                     </AccordionItem>
                 </Accordion>

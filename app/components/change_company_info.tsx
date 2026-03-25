@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ChevronDown } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 
-export default function ChangeCompanyInfoDialog() {
+export default function ChangeCompanyInfoDrawer() {
 
     const getCountries = useCompanyStore((s) => s.getCountries);
     const countries = useCompanyStore((s) => s.countries);
@@ -23,18 +23,22 @@ export default function ChangeCompanyInfoDialog() {
     const [companyData, setCompanyData] = useState<Partial<CompanyData>>();
 
     const [openCountryPopover, setOpenCountryPopover] = useState(false);
- 
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const [selectedCompanyType, setSelectedCompanyType] = useState("");
+
     const handleChange = (key: keyof CompanyData, e: any) => {
         setCompanyData(prev => ({
             ...prev,
-            [key] : e
+            [key]: e
         }));
     }
 
     const handleUpdateCompany = async () => {
         if (!company) return;
 
-        const res = await saveCompanyUpdate(company.id, companyData!)
+        const res = await saveCompanyUpdate(company.id, companyData!);
+
+        if (res) setOpenDrawer(false);
     }
 
     useEffect(() => {
@@ -45,14 +49,31 @@ export default function ChangeCompanyInfoDialog() {
         getCountries();
     }, [getCountries])
 
+    const companyType = [
+        {
+            value: "service",
+            desc: "Service"
+        },
+        {
+            value: "product",
+            desc: "Product"
+        },
+        {
+            value: "pns",
+            desc: "Product & Service"
+        }
+    ]
+
     return (
-        <Dialog>
-            <DialogTrigger asChild>
+        <Drawer direction="right" onOpenChange={setOpenDrawer} open={openDrawer}>
+            <DrawerTrigger asChild>
                 <Button className="mt-5">Change Company Information</Button>
-            </DialogTrigger>
-            <DialogContent>
-                <DialogTitle>Change Company Information</DialogTitle>
-                <div className="flex flex-col gap-5 overflow-y-auto">
+            </DrawerTrigger>
+            <DrawerContent className="max-w-[600px]">
+                <DrawerHeader>
+                    <DrawerTitle>Change Company Information</DrawerTitle>
+                </DrawerHeader>
+                <div className="flex flex-col gap-5 overflow-y-auto no-scrollbar px-4">
                     <Field>
                         <FieldLabel>Company Name</FieldLabel>
                         <Input placeholder="Your company name" name="name" value={companyData?.companyName ?? ""} onChange={(e) => handleChange("companyName", e.currentTarget.value)}></Input>
@@ -60,15 +81,17 @@ export default function ChangeCompanyInfoDialog() {
                     </Field>
                     <Field>
                         <FieldLabel>Company Type</FieldLabel>
-                        <Select onValueChange={(e) => handleChange('companyType', e)}>
+                        <Select onValueChange={(e) => {
+                            handleChange('companyType', e)
+                        }}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select company type">{companyData?.companyType ?? ""}</SelectValue>
                             </SelectTrigger>
                             <SelectContent position="popper" >
                                 <SelectGroup>
-                                    <SelectItem value='service'>Service</SelectItem>
-                                    <SelectItem value='product'>Product</SelectItem>
-                                    <SelectItem value='pns'>Product & Service</SelectItem>
+                                    {companyType.map((e, index) => (
+                                        <SelectItem key={index} value={e.value}>{e.desc}</SelectItem>
+                                    ))}
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
@@ -99,7 +122,7 @@ export default function ChangeCompanyInfoDialog() {
                         <Popover open={openCountryPopover} onOpenChange={setOpenCountryPopover}>
                             <PopoverTrigger asChild>
                                 <Button variant="outline" className="justify-between">
-                                    {companyData?.country === "" ? "Select a country" : companyData?.country }
+                                    {companyData?.country === "" ? "Select a country" : companyData?.country}
                                     <ChevronDown></ChevronDown>
                                 </Button>
                             </PopoverTrigger>
@@ -126,7 +149,7 @@ export default function ChangeCompanyInfoDialog() {
                     </Field>
                     <Button className="bg-green-500 hover:bg-green-600" onClick={handleUpdateCompany}>{isUpdating ? <Spinner></Spinner> : "Save Changes"}</Button>
                 </div>
-            </DialogContent>
-        </Dialog>
+            </DrawerContent>
+        </Drawer>
     );
 }
