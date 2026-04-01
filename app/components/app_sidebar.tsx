@@ -16,7 +16,7 @@ export function AppSidebar() {
     const handleLogout = async () => {
         const res = await logout();
 
-        if (res) router.push("/");
+        if (res) router.push("/login");
     }
 
     const getLink = (path: string, isLogout: boolean) => {
@@ -35,7 +35,7 @@ export function AppSidebar() {
 
     return (
         <Sidebar>
-            <SidebarHeader>
+            <SidebarHeader >
                 <SidebarContent>
                     <SidebarGroup>
                         <SidebarMenu>
@@ -116,7 +116,7 @@ export function AppSidebar() {
                                 </Collapsible> */}
                             </SidebarMenuItem>
                             <SidebarMenuItem>
-                                <SidebarMenuButton asChild className={getLink("", true)} onClick={async () => await logout()}>
+                                <SidebarMenuButton asChild className={getLink("", true)} onClick={handleLogout}>
                                     {/* <Link href="/"> */}
                                     <a>
 

@@ -15,18 +15,23 @@ export default async function Home() {
         <div className="p-6">
             <h1 className="text-2xl font-bold">Welcome, {user.data.user?.user_metadata.fullName}</h1>
             <div className="flex flex-col items-start justify-start">
-                <Item variant="outline" className="mt-3 bg-white">
-                    <ItemMedia><Info size={16}></Info></ItemMedia>
-                    <ItemContent>
-                        <ItemTitle>Set up your profile</ItemTitle>
-                        <ItemDescription>You need to set up your profile to access more features</ItemDescription>
-                    </ItemContent>
-                    <ItemActions>
-                        <Link href={"./profile"}>
-                            <Button size="sm" variant={"outline"} className="cursor-pointer">Setup</Button>
-                        </Link>
-                    </ItemActions>
-                </Item>
+                {user?.data.user?.user_metadata.profileSetup === false || user?.data.user?.user_metadata.profileSetup === undefined ? (
+                    <Item variant="outline" className="mt-3 bg-white">
+                        <ItemMedia><Info size={16}></Info></ItemMedia>
+                        <ItemContent>
+                            <ItemTitle>Set up your profile</ItemTitle>
+                            <ItemDescription>You need to set up your profile to access more features</ItemDescription>
+                        </ItemContent>
+                        <ItemActions>
+                            <Link href={"./profile"}>
+                                <Button size="sm" variant={"outline"} className="cursor-pointer">Setup</Button>
+                            </Link>
+                        </ItemActions>
+                    </Item>
+                ) : (
+                    <></>
+                )}
+
             </div>
             <hr className="my-5"></hr>
             <div className="">

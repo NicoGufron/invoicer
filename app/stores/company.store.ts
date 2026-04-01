@@ -150,8 +150,17 @@ export const useCompanyStore = create<CompanyStore>((set, get) => ({
             }
 
             const { error } = await supabase.from("company_profile").update(payload).eq("id", id).eq("user_id", user.id)
-            
+
             if (error) throw error;
+
+            const { error : companyError } = await supabase.auth.updateUser({
+                data: {
+                    companySetup: true
+                }
+            })
+
+            if (companyError) throw companyError;
+            
 
             get().updateCompany(company);
 

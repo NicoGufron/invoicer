@@ -10,16 +10,21 @@ type UserMetadata = {
 type AuthStore = {
     user: any,
     isLoading: boolean,
+    isUpdatingProfile: boolean,
+
     login: (email: string, password: string) => Promise<boolean>;
     logout: () => Promise<boolean>;
     initialize: () => void;
     createUser: (email: string, password: string, metadata: UserMetadata) => Promise<boolean>;
+    updateUserProfile : (payload: any) => void;
+    updateUserPassword: (password: string) => void;
 }
 
 export const useAuthStore = create<AuthStore>()(
     (set, get) => ({
         user: null,
         isLoading: false,
+        isUpdatingProfile: false,
 
         login: async (email, password) => {
             const supabase = createClient();
@@ -71,6 +76,7 @@ export const useAuthStore = create<AuthStore>()(
                             fullName: metadata.fullName,
                             phoneNumber: metadata.phoneNumber,
                             profileSetup: false,
+                            companySetup: false,
                         }
                     }
                 })
@@ -85,6 +91,45 @@ export const useAuthStore = create<AuthStore>()(
                 return false;
             } finally {
                 set({ isLoading: false});
+            }
+        },
+
+        updateUserProfile: async (payload) => {
+            const supabase = createClient();
+            set({isUpdatingProfile: true});
+
+            try {
+                const { error } = await supabase.auth.updateUser({
+                    data: {
+                      fullName: payload.fullName,
+                      phoneNumber: payload.phoneNumber,
+                    },
+                    email: payload.email,
+                })
+
+                if (error) throw error;
+
+                toast.success("Successfully updated profile")
+            } catch (err: any) {
+                toast.error(err.message);
+            } finally {
+                set({isUpdatingProfile: false})
+            }
+        },
+        
+        updateUserPassword: async (password) => {
+            const supabase = createClient();
+            set({isUpdatingProfile: true});
+
+            try {
+                const { error } = await supabase.auth.updateUser({
+                    password: password,
+                    // nonce: 
+                })
+            } catch (err: any) {
+                toast.error(err.message);
+            } finally {
+
             }
         },
 

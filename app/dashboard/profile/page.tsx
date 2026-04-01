@@ -6,6 +6,8 @@ import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@/comp
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createClient } from "@/lib/server";
 import { Info } from "lucide-react";
+import ChangeProfileDetails from "../home/change_profile_details";
+import ChangePassword from "../home/change_password";
 
 export default async function ProfilePage() {
 
@@ -47,8 +49,10 @@ export default async function ProfilePage() {
                         </div>
                         <hr></hr>
                         <span className="flex flex-row gap-5 my-5">
-                            <Button>Change Password</Button>
-                            <Button>Change Profile Details</Button>
+                            {/* <Button>Change Password</Button> */}
+                            <ChangePassword></ChangePassword>
+                            {/* <Button>Change Profile Details</Button> */}
+                            <ChangeProfileDetails user={data.user}></ChangeProfileDetails>
                         </span>
                     </TabsContent>
 
