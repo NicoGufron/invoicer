@@ -27,15 +27,15 @@ export function AppSidebar() {
         }
 
         const isActive = pathname === path;
-        const activeClasses = "bg-[#25343F] text-white hover:";
+        const activeClasses = "bg-[var(--primary)] text-white hover:bg-[var(--primary)] hover:text-white";
         const inactiveClasses = "text-black";
-
+        
         return `${baseClass} ${isActive ? activeClasses : inactiveClasses}`;
     }
 
     return (
         <Sidebar>
-            <SidebarHeader >
+            <SidebarHeader>
                 <SidebarContent>
                     <SidebarGroup>
                         <SidebarMenu>

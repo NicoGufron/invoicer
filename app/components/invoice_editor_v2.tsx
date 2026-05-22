@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { InvoiceData, LineItem, useInvoiceStore } from "../stores/invoice.store";
 import { Input } from "@/components/ui/input";
-import { Check, ChevronDown, ChevronDownIcon, FileJson, NotepadTextDashed, Plus, Send, Trash2, Upload, X } from "lucide-react";
+import { Check, ChevronDown, ChevronDownIcon, EyeIcon, FileJson, NotepadTextDashed, Plus, Receipt, Save, Send, Trash2, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
@@ -41,6 +41,15 @@ export default function InvoiceEditorV2({ user, id }: Props) {
 
     }
 
+    const handleExport = async (format? : string) => {
+        if (format === "pdf") {
+
+        }
+
+        if (format === "json") {
+        }
+    }
+
     useEffect(() => {
         if (!id) resetInvoice();
     }, [])
@@ -54,8 +63,8 @@ export default function InvoiceEditorV2({ user, id }: Props) {
     return (
         <div className="flex flex-col gap-6 p-5">
             <div className="flex flex-row gap-5 items-center justify-end">
-                <Button variant="outline">Save as Draft</Button>
-                {/* <Button variant="outline">Send Invoice</Button> */}
+                <Button variant="outline"><Save></Save>Save as Draft</Button>
+                <Button variant="outline"><EyeIcon></EyeIcon>Preview PDF</Button>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant={"outline"}>Export As<ChevronDown></ChevronDown></Button>

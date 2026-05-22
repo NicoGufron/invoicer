@@ -36,29 +36,29 @@ export default function CompanyInfo() {
 
                                 <div className="grid grid-cols-2 gap-5 mb-5">
                                     <Field>
-                                        <FieldLabel>Company Name</FieldLabel>
+                                        <FieldLabel className="font-bold">Company Name</FieldLabel>
                                         <p>{company?.companyName ?? "-"}</p>
                                     </Field>
                                     <Field>
-                                        <FieldLabel>Company Type</FieldLabel>
+                                        <FieldLabel className="font-bold">Company Type</FieldLabel>
                                         <p>{company?.companyType ?? "-"}</p>
                                     </Field>
                                     <Field className="col-span-1">
-                                        <FieldLabel>Company Description</FieldLabel>
+                                        <FieldLabel className="font-bold">Company Description</FieldLabel>
                                         <p>{company?.companyDescription ?? "-"}</p>
                                     </Field>
                                 </div>
                                 <div className="grid grid-cols-2 gap-5">
                                     <Field>
-                                        <FieldLabel>Country</FieldLabel>
+                                        <FieldLabel className="font-bold">Country</FieldLabel>
                                         <p>{company?.country ?? "-"}</p>
                                     </Field>
                                     <Field>
-                                        <FieldLabel>Company Address</FieldLabel>
+                                        <FieldLabel className="font-bold">Company Address</FieldLabel>
                                         <p>{company?.companyAddress ?? "-"}</p>
                                     </Field>
                                     <Field>
-                                        <FieldLabel>City</FieldLabel>
+                                        <FieldLabel className="font-bold">City</FieldLabel>
                                         <p>{company?.city ?? "-"}</p>
                                     </Field>
                                 </div>
@@ -70,11 +70,11 @@ export default function CompanyInfo() {
                         <AccordionTrigger className="text-md font-bold">Company Contact Information</AccordionTrigger>
                         <AccordionContent className="space-y-5">
                             <Field>
-                                <FieldLabel>Company Email</FieldLabel>
+                                <FieldLabel className="font-bold">Company Email</FieldLabel>
                                 <p>{company?.companyEmail ?? "-"}</p>
                             </Field>
                             <Field>
-                                <FieldLabel>Company Phone Number</FieldLabel>
+                                <FieldLabel className="font-bold">Company Phone Number</FieldLabel>
                                 <p>{company?.companyPhoneNumber}</p>
                             </Field>
                             {/* <Button>Change Contact Information</Button> */}

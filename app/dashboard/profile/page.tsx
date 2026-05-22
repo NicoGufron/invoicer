@@ -35,15 +35,15 @@ export default async function ProfilePage() {
                                 </ItemContent>
                             </Item>
                             <Field>
-                                <FieldLabel>Full Name</FieldLabel>
+                                <FieldLabel className="font-bold">Full Name</FieldLabel>
                                 <p>{data.user?.user_metadata.fullName}</p>
                             </Field>
                             <Field>
-                                <FieldLabel>Email</FieldLabel>
+                                <FieldLabel className="font-bold">Email</FieldLabel>
                                 <p>{data.user?.user_metadata.email}</p>
                             </Field>
                             <Field>
-                                <FieldLabel>Phone Number</FieldLabel>
+                                <FieldLabel className="font-bold">Phone Number</FieldLabel>
                                 <p>{data.user?.user_metadata.phoneNumber}</p>
                             </Field>
                         </div>
