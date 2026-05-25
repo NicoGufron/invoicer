@@ -2,9 +2,9 @@
 
 import { fmt, formatDate } from "@/lib/utils";
 import { LineItem, useInvoiceStore } from "../stores/invoice.store";
-import { useEffect } from "react";
+import { forwardRef, useEffect } from "react";
 
-export default function InvoicePreview() {
+const InvoicePreview = forwardRef<HTMLDivElement>((_, ref) => {
     const invoice = useInvoiceStore((s) => s.invoice);
     const updateInvoice = useInvoiceStore((s) => s.updateInvoice);
     // const { subtotal, discountAmt, taxAmt, total } = useInvoiceTotals();
@@ -41,13 +41,13 @@ export default function InvoicePreview() {
     }, [total]);
 
     return (
-        <div className="bg-white w-[680px] min-h-[1200px] flex flex-col text-[#1a1a1a] overflow-hidden">
+        <div ref={ref} className="bg-white w-[680px] min-h-[1200px] flex flex-col text-[#1a1a1a] overflow-hidden">
             <div className="h-1.5 w-full bg-primary flex-shrink-0">
                 <div className="flex flex-col flex-1 p-14">
                     <div className="flex justify-between items-start mb-12">
                         <div>
                             {invoice.logoUrl && (
-                                <img src={invoice.logoUrl} alt="logo" className="h-50 object-contain mb-3"></img>
+                                <img src={invoice.logoUrl} alt="logo" className="h-15 w-auto object-contain mb-3"></img>
                             )}
                             <div className="text-2xl font-bold tracking-tight leading-none">
                                 {invoice.companyName || "Your Company"}
@@ -175,20 +175,24 @@ export default function InvoicePreview() {
                             {/* {invoice.notes && ( */}
                             <div>
                                 <div className="text-[10px] uppercase tracking-[0.13em] text-[#aaa] mb-1.5">Notes</div>
-                                <p className="text-[#666] leading-relaxed whitespace-pre-wrap">{invoice.notes}</p>
+                                <p className="text-[10px] text-[#666] leading-relaxed whitespace-pre-wrap">{invoice.notes}</p>
                             </div>
                             {/* )} */}
                             {/* {invoice.terms && ( */}
                             <div>
                                 <div className="text-[10px] uppercase tracking-[0.13em] text-[#aaa] mb-1.5">Terms</div>
-                                <p className="text-[#666] leading-relaxed whitespace-pre-wrap">{invoice.terms}</p>
+                                <p className="text-[10px] text-[#666] leading-relaxed whitespace-pre-wrap">{invoice.terms}</p>
                             </div>
                             {/* )} */}
                         </div>
                     )}
                 </div>
-                <div className="h-1 w-full bg-primary/20 flex-shrink-0" />
+                {/* <div className="h-1.5 w-full bg-primary flex-shrink-0" /> */}
             </div>
         </div>
     )
-}
+})
+
+InvoicePreview.displayName = "InvoicePreview";
+
+export default InvoicePreview;

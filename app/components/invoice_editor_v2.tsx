@@ -19,13 +19,18 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useAuthStore } from "../stores/auth.store";
 import { toast } from "sonner";
+import { useCompanyStore } from "../stores/company.store";
+import html2canvas from "html2canvas-pro";
 
 interface Props {
     user: any,
     id?: string,
+    showPreview: boolean,
+    onPreview: () => void,
+    previewRef: React.RefObject<HTMLDivElement | null>;
 }
 
-export default function InvoiceEditorV2({ user, id }: Props) {
+export default function InvoiceEditorV2({ user, id, previewRef, showPreview, onPreview }: Props) {
 
     const invoice = useInvoiceStore((s) => s.invoice);
     // const editInvoice = useInvoiceStore((s) => s.invoice);
@@ -35,18 +40,88 @@ export default function InvoiceEditorV2({ user, id }: Props) {
     const handleSaveDraft = async (id?: string) => {
         const res = await saveDraftInvoice(id);
 
-        // if (res) {
-        //     toast.success("Invoice succesfully saved as draft");
-        // }
+        if (res) {
+            toast.success("Invoice succesfully saved as draft");
+        }
 
     }
 
-    const handleExport = async (format? : string) => {
+    // const invoicePref = useRef<HTMLDivElement>(null);
+
+    const handlePreview = async () => {
+        const { default: html2canvas } = await import("html2canvas-pro");
+        const { default: jsPDF } = await import("jspdf");
+
+        if (!(previewRef.current instanceof HTMLDivElement)) {
+            toast.error("Preview is not available");
+            return;
+        }
+
+        const canvas = await html2canvas(previewRef.current, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#fff",
+        })
+
+        const pdf = new jsPDF({ unit: "px", format: "a4", orientation: "portrait" });
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = canvas.height * pageW / canvas.width;
+
+        pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, pageW, pageH);
+
+        const blob = pdf.output("blob");
+        const url = URL.createObjectURL(blob);
+        window.open(url, "_blank");
+    }
+
+    const handleExport = async (format?: string) => {
+
+        if (!(previewRef.current instanceof HTMLDivElement)) {
+            toast.error("Preview not available");
+            return;
+        }
+
+        const canvas = html2canvas(previewRef.current, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#fff",
+        })
+
         if (format === "pdf") {
+            const { default: html2canvas } = await import("html2canvas-pro");
+            const { default: jsPDF } = await import("jspdf");
+
+            if (!(previewRef.current instanceof HTMLDivElement)) {
+                toast.error("Preview is not available");
+                return;
+            }
+
+            const canvas = await html2canvas(previewRef.current, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: "#fff",
+            })
+
+            const pdf = new jsPDF({ unit: "px", format: "a4", orientation: "portrait" });
+            const pageW = pdf.internal.pageSize.getWidth();
+            const pageH = canvas.height * pageW / canvas.width;
+            pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, pageW, pageH);
+            pdf.save(`${invoice.invoiceNumber}.pdf`);
 
         }
 
         if (format === "json") {
+            const blob = new Blob([JSON.stringify(invoice, null, 2)], {
+                type: "application/json"
+            });
+
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${invoice.invoiceNumber}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
         }
     }
 
@@ -63,16 +138,16 @@ export default function InvoiceEditorV2({ user, id }: Props) {
     return (
         <div className="flex flex-col gap-6 p-5">
             <div className="flex flex-row gap-5 items-center justify-end">
-                <Button variant="outline"><Save></Save>Save as Draft</Button>
-                <Button variant="outline"><EyeIcon></EyeIcon>Preview PDF</Button>
+                <Button variant="outline" onClick={() => handleSaveDraft(id)}><Save></Save>Save as Draft</Button>
+                <Button variant="outline" onClick={onPreview}><EyeIcon></EyeIcon>{showPreview ? "Close Preview" : "Preview PDF"}</Button>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant={"outline"}>Export As<ChevronDown></ChevronDown></Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start">
                         {/* <DropdownMenuLabel>Export as:</DropdownMenuLabel> */}
-                        <DropdownMenuItem><NotepadTextDashed></NotepadTextDashed>PDF</DropdownMenuItem>
-                        <DropdownMenuItem><FileJson></FileJson>JSON</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleExport("pdf")}><NotepadTextDashed></NotepadTextDashed>PDF</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleExport("json")}><FileJson></FileJson>JSON</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
 
@@ -83,7 +158,7 @@ export default function InvoiceEditorV2({ user, id }: Props) {
             <MetaSection></MetaSection>
             <hr></hr>
             <div className="grid md:grid-cols-2 grid-cols-1 space-x-15">
-                <SenderSection user={user}></SenderSection>
+                <SenderSection user={user} id={id}></SenderSection>
                 <ClientSection></ClientSection>
             </div>
             <hr></hr>
@@ -152,11 +227,14 @@ function LogoSection() {
     )
 }
 
-function SenderSection({ user }: any) {
+function SenderSection({ user, }: any) {
     const companyName = useInvoiceStore((s) => s.invoice.companyName);
     const companyAddress = useInvoiceStore((s) => s.invoice.companyAddress);
     const companyEmail = useInvoiceStore((s) => s.invoice.companyEmail);
     const companyNumber = useInvoiceStore((s) => s.invoice.companyNumber);
+
+    const getCompany = useCompanyStore((c) => c.getCompany);
+    const userCompany = useCompanyStore((c) => c.company);
 
     const updateInvoice = useInvoiceStore((s) => s.updateInvoice);
 
@@ -166,32 +244,41 @@ function SenderSection({ user }: any) {
         })
     }
 
-    // useEffect(() => {
-    //     if (user) {
-    //         handleChange('companyEmail', user.user_metadata.email);
-    //     }
-    // }, [user])
+    useEffect(() => {
+        if (user) {
+            getCompany();
+        }
+    }, [user])
+
+    useEffect(() => {
+
+        if (!userCompany) return;
+
+        updateInvoice({
+            companyName: userCompany.companyName,
+            companyEmail: userCompany.companyEmail,
+            companyAddress: userCompany.companyAddress,
+            companyNumber: userCompany.companyPhoneNumber
+        })
+    }, [userCompany])
 
     return (
         <div>
-            <p className="text-xl font-bold">Your Details</p>
+            <p className="text-[var(--primary)] text-xl font-bold">Your Details</p>
+            <hr className="my-5"></hr>
+
             <div className="flex flex-col gap-3 py-5">
                 <FieldGroup>
                     <Field>
-                        <FieldLabel>Company Name</FieldLabel>
-                        <Input value={companyName ?? ""} onChange={(e) => handleChange("companyName", e)}></Input>
-                    </Field>
-                    <Field>
-                        <FieldLabel>Company Email</FieldLabel>
-                        <Input value={companyEmail ?? ""} onChange={(e) => handleChange("companyEmail", e)}></Input>
-                    </Field>
-                    <Field>
-                        <FieldLabel>Company Number</FieldLabel>
-                        <Input value={companyNumber ?? ""} onChange={(e) => handleChange("companyNumber", e)}></Input>
-                    </Field>
-                    <Field>
-                        <FieldLabel>Company Address</FieldLabel>
-                        <Textarea value={companyAddress ?? ""} onChange={(e) => handleChange("companyAddress", e)}></Textarea>
+                        {/* <FieldLabel>Company Name</FieldLabel> */}
+                        <p className="text-[var(--primary)] font-bold text-lg">{companyName}</p>
+                        <span className="text-sm flex flex-col pt-5">
+                            <p>Email: {companyEmail}</p>
+                            <p>Tel: {companyNumber}</p>
+                            <p>Address: {companyAddress}</p>
+                        </span>
+
+                        {/* <Input disabled value={companyName ?? ""} onChange={(e) => handleChange("companyName", e)}></Input> */}
                     </Field>
                 </FieldGroup>
             </div>
@@ -204,8 +291,48 @@ function ClientSection() {
     const clientEmail = useInvoiceStore((s) => s.invoice.clientEmail);
     const clientAddress = useInvoiceStore((s) => s.invoice.clientAddress);
     const clientNumber = useInvoiceStore((s) => s.invoice.clientNumber);
-    const invoice = useInvoiceStore((s) => s.invoice);
     const updateInvoice = useInvoiceStore((s) => s.updateInvoice);
+
+    return (
+        <div>
+            <p className="text-xl font-bold flex-1 text-[var(--primary)]">Client Details</p>
+            <hr className="my-5"></hr>
+            <div className="flex flex-col gap-3 py-5">
+                <FieldGroup>
+
+                    <Field>
+                        <p className="text-[var(--primary)] font-bold text-lg">{clientName}</p>
+                        <span className="text-sm flex flex-col pt-5">
+
+                            <p>Email: {clientEmail}</p>
+                            <p>Tel: {clientNumber}</p>
+                            <p>Address: {clientAddress}</p>
+                        </span>
+
+                    </Field>
+                </FieldGroup>
+            </div>
+        </div>
+    );
+}
+
+function MetaSection() {
+    const invoiceNumber = useInvoiceStore((s) => s.invoice.invoiceNumber);
+    const issueDate = useInvoiceStore((s) => s.invoice.issueDate);
+    const dueDate = useInvoiceStore((s) => s.invoice.dueDate);
+    const invoice = useInvoiceStore((s) => s.invoice);
+
+    const updateInvoice = useInvoiceStore((s) => s.updateInvoice);
+
+    const [issueDateOpen, setIssueDateOpen] = useState(false);
+    const [dueDateOpen, setDueDateOpen] = useState(false);
+
+
+    const handleChange = (key: keyof InvoiceData, e: any) => {
+        updateInvoice({
+            [key]: e
+        })
+    }
 
     const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
 
@@ -244,91 +371,6 @@ function ClientSection() {
         })
     }
 
-    const handleChange = (key: keyof InvoiceData, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        updateInvoice({
-            [key]: e.currentTarget.value
-        })
-    }
-
-    return (
-        <div>
-            <p className="text-xl font-bold flex-1">Client Details</p>
-            <div className="flex flex-row items-end justify-between gap-5 mt-5">
-                <Field className="w-2/4 ">
-                    <FieldLabel>Choose Partner</FieldLabel>
-                    <Popover open={openPartner} onOpenChange={setOpenPartner}>
-                        <PopoverTrigger asChild>
-                            <Button className="justify-between" variant="outline">{selectedPartner?.name ?? "Choose Partner"}<ChevronDown></ChevronDown></Button>
-                        </PopoverTrigger>
-                        <PopoverContent align="start">
-                            <Command>
-                                <CommandInput></CommandInput>
-                                <CommandList>
-                                    {partners.map((partner) => (
-                                        <CommandItem key={partner.id} keywords={[partner.name]} onSelect={(e) => {
-                                            setSelectedPartner(partner);
-                                            handleChangePartner("partnerId", partner.id);
-                                            setOpenPartner(false);
-                                        }}>
-                                            <span className="flex flex-col">
-                                                <p>{partner.name}</p>
-                                                <p className="text-xs">{partner.phone}</p>
-                                                <p className="text-xs">{partner.email}</p>
-
-                                            </span>
-                                            <Check className={cn("ml-auto", selectedPartner?.name === partner.name ? "opacity-100" : "opacity-0")}></Check>
-                                        </CommandItem>
-                                    ))}
-                                </CommandList>
-                            </Command>
-                        </PopoverContent>
-                    </Popover>
-                </Field>
-                {/* <p>or</p> */}
-                <Button className="w-1/4 bg-[#25343F]">Create new Partner</Button>
-            </div>
-            <hr className="my-5"></hr>
-            <div className="flex flex-col gap-3">
-                <FieldGroup>
-
-                    <Field>
-                        <FieldLabel>Client Name</FieldLabel>
-                        <Input value={clientName} onChange={(e) => handleChange('clientName', e)}></Input>
-                    </Field>
-                    <Field>
-                        <FieldLabel>Client Address</FieldLabel>
-                        <Input value={clientAddress} onChange={(e) => handleChange('clientAddress', e)}></Input>
-                    </Field>
-                    <Field>
-                        <FieldLabel>Client Number</FieldLabel>
-                        <Input value={clientNumber} onChange={(e) => handleChange('clientNumber', e)}></Input>
-                    </Field>
-                    <Field>
-                        <FieldLabel>Client Email</FieldLabel>
-                        <Textarea value={clientEmail} onChange={(e) => handleChange('clientEmail', e)}></Textarea>
-                    </Field>
-                </FieldGroup>
-            </div>
-        </div>
-    );
-}
-
-function MetaSection() {
-    const invoiceNumber = useInvoiceStore((s) => s.invoice.invoiceNumber);
-    const issueDate = useInvoiceStore((s) => s.invoice.issueDate);
-    const dueDate = useInvoiceStore((s) => s.invoice.dueDate);
-
-    const updateInvoice = useInvoiceStore((s) => s.updateInvoice);
-
-    const [issueDateOpen, setIssueDateOpen] = useState(false);
-    const [dueDateOpen, setDueDateOpen] = useState(false);
-
-
-    const handleChange = (key: keyof InvoiceData, e: any) => {
-        updateInvoice({
-            [key]: e
-        })
-    }
 
     return (
         <div>
@@ -392,6 +434,37 @@ function MetaSection() {
                             </PopoverContent>
                         </Popover>
                     </Field>
+                    <Field className="">
+                        <FieldLabel>Choose Partner</FieldLabel>
+                        <Popover open={openPartner} onOpenChange={setOpenPartner}>
+                            <PopoverTrigger asChild>
+                                <Button className="justify-between" variant="outline">{selectedPartner?.name ?? "Choose Partner"}<ChevronDown></ChevronDown></Button>
+                            </PopoverTrigger>
+                            <PopoverContent align="start">
+                                <Command>
+                                    <CommandInput></CommandInput>
+                                    <CommandList>
+                                        {partners.map((partner) => (
+                                            <CommandItem key={partner.id} keywords={[partner.name]} onSelect={(e) => {
+                                                setSelectedPartner(partner);
+                                                handleChangePartner("partnerId", partner.id);
+                                                setOpenPartner(false);
+                                            }}>
+                                                <span className="flex flex-col">
+                                                    <p>{partner.name}</p>
+                                                    <p className="text-xs">{partner.phone}</p>
+                                                    <p className="text-xs">{partner.email}</p>
+
+                                                </span>
+                                                <Check className={cn("ml-auto", selectedPartner?.name === partner.name ? "opacity-100" : "opacity-0")}></Check>
+                                            </CommandItem>
+                                        ))}
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+                        <Button className="bg-[#25343F]">Create new Partner</Button>
+                    </Field>
                 </div>
             </div>
         </div>
@@ -424,8 +497,8 @@ const CURRENCIES = [
 function LineItemRow({ item }: { item: LineItem }) {
     const updateItem = useInvoiceStore((s) => s.updateItem);
     const removeItem = useInvoiceStore((s) => s.removeItem);
-
     const updateInvoice = useInvoiceStore((s) => s.updateInvoice);
+    const invoiceCurrency = useInvoiceStore((s) => s.invoice.currency);
 
     const handleChangeCurrency = (code: string) => {
         updateInvoice({
@@ -433,13 +506,13 @@ function LineItemRow({ item }: { item: LineItem }) {
         })
     }
 
-    const [currency, setCurrency] = useState("$");
+    // const [currency, setCurrency] = useState("$");
     const [discountType, setDiscountType] = useState("%");
 
     const [openCurrency, setOpenCurrency] = useState(false);
     const [openDiscountType, setOpenDiscountType] = useState(false);
 
-    const currencySymbol = CURRENCIES.find((c) => c.code === currency)?.value ?? "$";
+    const currencySymbol = CURRENCIES.find((c) => c.code === invoiceCurrency)?.value ?? "$";
 
     return (
         <TableRow>
@@ -494,7 +567,6 @@ function LineItemRow({ item }: { item: LineItem }) {
                                 <CommandGroup heading="Available Currencies">
                                     {CURRENCIES.map((c) => (
                                         <CommandItem key={c.value} value={c.value} onSelect={(e) => {
-                                            setCurrency(c.value);
                                             handleChangeCurrency(c.code);
                                             setOpenCurrency(false);
                                         }}>

@@ -8,13 +8,14 @@ import { createClient } from "@/lib/server";
 import { Info } from "lucide-react";
 import ChangeProfileDetails from "../home/change_profile_details";
 import ChangePassword from "../home/change_password";
+import { Input } from "@/components/ui/input";
 
 export default async function ProfilePage() {
 
     const supabase = await createClient();
 
     const { data } = await supabase.auth.getUser();
-    
+
     return (
         <section className="p-6">
             <h1 className="text-xl font-bold">Profile</h1>
@@ -24,6 +25,7 @@ export default async function ProfilePage() {
                     <TabsList variant={"line"}>
                         <TabsTrigger value="personal">Personal Profile</TabsTrigger>
                         <TabsTrigger value="company">Company Profile</TabsTrigger>
+                        <TabsTrigger value="settings">Invoice Settings</TabsTrigger>
                     </TabsList>
                     <TabsContent value="personal">
                         <div className="flex flex-col items-start justify-start py-5 gap-6">
@@ -58,6 +60,25 @@ export default async function ProfilePage() {
 
                     <TabsContent value="company">
                         <CompanyInfo></CompanyInfo>
+                    </TabsContent>
+                    <TabsContent value="settings">
+                        <Item variant={"outline"} className="bg-blue-50 w-full">
+                            <ItemMedia><Info size={16}></Info></ItemMedia>
+                            <ItemContent>
+                                <ItemTitle>Attention</ItemTitle>
+                                <ItemDescription className="text-black">Changes will be saved and applied to future invoices automatically</ItemDescription>
+                            </ItemContent>
+                        </Item>
+                        <div>
+                            <Field>
+                                <FieldLabel>Terms</FieldLabel>
+                                <Input></Input>
+                            </Field>
+                            <Field>
+                                <FieldLabel>Notes</FieldLabel>
+                                <Input></Input>
+                            </Field>
+                        </div>
                     </TabsContent>
                 </Tabs>
             </div>
