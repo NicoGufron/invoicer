@@ -170,7 +170,7 @@ const InvoicePreview = forwardRef<HTMLDivElement>((_, ref) => {
                             </div>
                         </div>
                     </div>
-                    {(invoice.notes || invoice.terms) && (
+                    {/* {(invoice.notes || invoice.terms) && ( */}
                         <div className="mt-auto py-6 border-t border-[#ebebeb] grid grid-cols-2 gap-8 text-xs">
                             {/* {invoice.notes && ( */}
                             <div>
@@ -185,7 +185,7 @@ const InvoicePreview = forwardRef<HTMLDivElement>((_, ref) => {
                             </div>
                             {/* )} */}
                         </div>
-                    )}
+                    {/* )} */}
                 </div>
                 {/* <div className="h-1.5 w-full bg-primary flex-shrink-0" /> */}
             </div>

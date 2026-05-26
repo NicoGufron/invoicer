@@ -13,6 +13,8 @@ export interface CompanyData {
     companyAddress: string,
     country: string,
     city: string,
+    default_terms: string,
+    default_notes: string,
 }
 
 interface Country {
@@ -37,7 +39,9 @@ const mappingCompanyData = (raw: any) : CompanyData => ({
     companyAddress: raw.company_address,
     companyPhoneNumber: raw.company_phone_number,
     country: raw.country,
-    city: raw.city
+    city: raw.city,
+    default_notes: raw.default_notes,
+    default_terms: raw.default_terms,
 })
 
 interface CompanyStore {
@@ -146,6 +150,8 @@ export const useCompanyStore = create<CompanyStore>((set, get) => ({
                 company_address: company?.companyAddress,
                 country: company?.country,
                 city: company?.city,
+                default_terms: company?.default_terms,
+                default_notes: company?.default_notes,
                 updated_at: new Date().toISOString()
             }
 
@@ -164,7 +170,7 @@ export const useCompanyStore = create<CompanyStore>((set, get) => ({
 
             get().updateCompany(company);
 
-            toast.success("Company updated!");
+            // toast.success("Company updated!");
             return true;
         } catch (err: any) {
             return false;

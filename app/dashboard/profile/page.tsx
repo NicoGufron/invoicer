@@ -9,6 +9,9 @@ import { Info } from "lucide-react";
 import ChangeProfileDetails from "../home/change_profile_details";
 import ChangePassword from "../home/change_password";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import InvoicePreview from "@/app/components/invoice_preview";
+import Settings from "@/app/components/change_settings";
 
 export default async function ProfilePage() {
 
@@ -62,23 +65,7 @@ export default async function ProfilePage() {
                         <CompanyInfo></CompanyInfo>
                     </TabsContent>
                     <TabsContent value="settings">
-                        <Item variant={"outline"} className="bg-blue-50 w-full">
-                            <ItemMedia><Info size={16}></Info></ItemMedia>
-                            <ItemContent>
-                                <ItemTitle>Attention</ItemTitle>
-                                <ItemDescription className="text-black">Changes will be saved and applied to future invoices automatically</ItemDescription>
-                            </ItemContent>
-                        </Item>
-                        <div>
-                            <Field>
-                                <FieldLabel>Terms</FieldLabel>
-                                <Input></Input>
-                            </Field>
-                            <Field>
-                                <FieldLabel>Notes</FieldLabel>
-                                <Input></Input>
-                            </Field>
-                        </div>
+                        <Settings></Settings>
                     </TabsContent>
                 </Tabs>
             </div>
