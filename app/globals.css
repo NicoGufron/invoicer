@@ -59,7 +59,10 @@
   --popover-foreground: oklch(0.141 0.005 285.823);
   --primary: #25343F;
   --primary-foreground: oklch(0.985 0 0);
-  --green: #ABF600;
+  --green: #3A8C73;
+  --green-tint: #E6F5F0;
+  --surface: #F7F8F6;
+  --white: #ffffff;
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.967 0.001 286.375);
   --muted-foreground: oklch(0.552 0.016 285.938);
@@ -95,7 +98,10 @@
   --primary: #25343F;
   --primary-foreground: oklch(0.21 0.006 285.885);
   --secondary: oklch(0.274 0.006 286.033);
-  --green: #ABF600;
+  --green: #3A8C73;
+  --green-tint: #E6F5F0;
+  --surface: #F7F8F6;
+  --white: #ffffff;
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.274 0.006 286.033);
   --muted-foreground: oklch(0.705 0.015 286.067);
@@ -139,6 +145,67 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: var(--f-display);
+  overflow-x: hidden;
+}
+
+.hero-section {
+  padding: 148px 5% 100px; 
+  max-width: 1200px;
+  margin: 0 auto;  
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  position: relative;
+}
+
+.step {
+  position: relative;
+  padding-right: 32px;
+}
+
+.step-connector {
+  position: absolute;
+  top: 55px;
+  right: 0;
+  left: 56px;
+  height: 2px;
+  background: rgba(255,255,255,0.04);
+}
+
+.step:last-child .step-connector {
+  display: none;
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid gray;
+  color: var(--green);
+  z-index: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.04);
+  justify-content: center;
+}
+
+.step-title {
+  color: white;
+  margin-bottom: 8px;
+}
+
+.step-desc {
+  color: gray;
+  line-height: 1.65;
+  font-size: 13px;
 }
