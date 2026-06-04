@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import InvoicePreviewHero from "./invoice_preview_hero";
+import { useInvoiceStore } from "../stores/invoice.store";
 
-export default function HeroSection() {
+export default function HeroSection() {    
+    
     return (
         <section className="hero-section">
             <div className="grid grid-cols-2 items-center justify-center gap-5">

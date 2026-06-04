@@ -41,7 +41,7 @@ const InvoicePreviewHero1 = forwardRef<HTMLDivElement>((_, ref) => {
     }, [total]);
 
     return (
-        <div ref={ref} className="bg-white w-[1/2] h-screen flex flex-col text-[#1a1a1a] overflow-hidden">
+        <div ref={ref} className="bg-white w-[1/2] h-[1/3] flex flex-col text-[#1a1a1a] overflow-hidden">
             {/* Minimal top rule — single pixel, neutral */}
             <div className="h-px w-full bg-[#e0e0e0] flex-shrink-0" />
 
@@ -54,7 +54,7 @@ const InvoicePreviewHero1 = forwardRef<HTMLDivElement>((_, ref) => {
                             <img src={invoice.logoUrl} alt="logo" className="h-10 w-auto object-contain mb-4" />
                         )}
                         <div className="text-xl font-semibold tracking-tight leading-none text-[#111]">
-                            {invoice.companyName || "Your Company"}
+                            {invoice.companyName || "PT Bank Central Asia"}
                         </div>
                         <div className="text-[11px] text-[#999] mt-2 whitespace-pre-wrap leading-relaxed">
                             {invoice.companyAddress}
