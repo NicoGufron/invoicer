@@ -2,7 +2,7 @@
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubItem } from "@/components/ui/sidebar";
-import { ChevronDown, FileText, Home, LogOut, User, Users } from "lucide-react";
+import { ChevronDown, FileText, Home, LogOut, User, Users, UserStar } from "lucide-react";
 import Link from "next/link";
 import { useAuthStore } from "../stores/auth.store";
 import { usePathname, useRouter } from "next/navigation";
@@ -29,7 +29,7 @@ export function AppSidebar() {
         const isActive = pathname === path;
         const activeClasses = "bg-[var(--primary)] text-white hover:bg-[var(--primary)] hover:text-white";
         const inactiveClasses = "text-black";
-        
+
         return `${baseClass} ${isActive ? activeClasses : inactiveClasses}`;
     }
 
@@ -50,36 +50,36 @@ export function AppSidebar() {
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild className={getLink("/dashboard/profile", false)}>
                                     <Link href="/dashboard/profile">
-                                    <User></User>
-                                    Profile
+                                        <User></User>
+                                        Profile
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                             <SidebarMenuItem>
                                 {/* <SidebarMenuButton> */}
-                                    <Collapsible>
-                                        <CollapsibleTrigger asChild>
-                                            <SidebarMenuButton variant="outline" className="font-semibold">
-                                                <FileText></FileText>
-                                                Invoice
-                                            </SidebarMenuButton>
-                                        </CollapsibleTrigger>
-                                        <CollapsibleContent>
-                                            <SidebarMenuSub>
-                                                <SidebarMenuSubItem>
-                                                    <SidebarMenuButton className={getLink("/dashboard/invoice/create", false)}>
-                                                        <Link href="/dashboard/invoice/create">Create Invoice</Link>
-                                                    </SidebarMenuButton>
-                                                </SidebarMenuSubItem>
-                                                <SidebarMenuSubItem>
-                                                    <SidebarMenuButton className={getLink("/dashboard/invoice/view", false)}>
-                                                        <Link href="/dashboard/invoice/view">View Invoice</Link>
-                                                    </SidebarMenuButton>
-                                                </SidebarMenuSubItem>
-                                            </SidebarMenuSub>
-                                        </CollapsibleContent>
-                                    </Collapsible>
-                                    {/* <Link href="/dashboard/generate">
+                                <Collapsible>
+                                    <CollapsibleTrigger asChild>
+                                        <SidebarMenuButton variant="outline" className="font-semibold">
+                                            <FileText></FileText>
+                                            Invoice
+                                        </SidebarMenuButton>
+                                    </CollapsibleTrigger>
+                                    <CollapsibleContent>
+                                        <SidebarMenuSub>
+                                            <SidebarMenuSubItem>
+                                                <SidebarMenuButton className={getLink("/dashboard/invoice/create", false)}>
+                                                    <Link href="/dashboard/invoice/create">Create Invoice</Link>
+                                                </SidebarMenuButton>
+                                            </SidebarMenuSubItem>
+                                            <SidebarMenuSubItem>
+                                                <SidebarMenuButton className={getLink("/dashboard/invoice/view", false)}>
+                                                    <Link href="/dashboard/invoice/view">View Invoice</Link>
+                                                </SidebarMenuButton>
+                                            </SidebarMenuSubItem>
+                                        </SidebarMenuSub>
+                                    </CollapsibleContent>
+                                </Collapsible>
+                                {/* <Link href="/dashboard/generate">
                                         <FileText />
                                         Invoice
                                     </Link> */}
@@ -114,6 +114,14 @@ export function AppSidebar() {
                                         </SidebarMenuSub>
                                     </CollapsibleContent>
                                 </Collapsible> */}
+                            </SidebarMenuItem>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild className={getLink("", false)}>
+                                    <Link href="">
+                                        <UserStar></UserStar>
+                                        Feedback
+                                    </Link>
+                                </SidebarMenuButton>
                             </SidebarMenuItem>
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild className={getLink("", true)} onClick={handleLogout}>

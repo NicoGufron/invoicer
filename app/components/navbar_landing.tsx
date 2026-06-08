@@ -13,7 +13,7 @@ export default function NavbarLanding() {
                     <div className="hidden md:flex items-center space-x-8">
                         <Link href="#features" className="text-sm transition-colors hover:text-[var(--green)]">Features</Link>
                         <Link href="#how" className="text-sm transition-colors hover:text-[var(--green)]">How it works</Link>
-                        <Button className="text-sm font-bold">Get Started</Button>
+                        <Link href="/login"><Button className="text-sm font-bold">Get Started</Button></Link>
                     </div>
                 </div>
             </div>

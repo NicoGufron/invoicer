@@ -15,16 +15,16 @@ export default async function Home() {
         <div className="p-6">
             <h1 className="text-2xl font-bold">Welcome, {user.data.user?.user_metadata.fullName}</h1>
             <div className="flex flex-col items-start justify-start">
-                {user?.data.user?.user_metadata.profileSetup === false || user?.data.user?.user_metadata.profileSetup === undefined ? (
+                {user?.data.user?.user_metadata.profileSetup === false ? (
                     <Item variant="outline" className="mt-3 bg-white">
                         <ItemMedia><Info size={16}></Info></ItemMedia>
                         <ItemContent>
-                            <ItemTitle>Complete your profile setup</ItemTitle>
+                            <ItemTitle className="font-bold">Complete your profile setup</ItemTitle>
                             <ItemDescription>Add your details to unlock features and start sending invoices</ItemDescription>
                         </ItemContent>
                         <ItemActions>
                             <Link href={"./profile"}>
-                                <Button size="sm" variant={"outline"} className="cursor-pointer">Setup Now</Button>
+                                <Button size="sm" className="cursor-pointer">Setup Now</Button>
                             </Link>
                         </ItemActions>
                     </Item>

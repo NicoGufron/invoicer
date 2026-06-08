@@ -5,12 +5,15 @@ import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { EyeOffIcon, Eye } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "../stores/auth.store";
 import Link from "next/link";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { toast } from "sonner";
+import { Popover, PopoverContent, PopoverDescription, PopoverTitle, PopoverTrigger } from "@/components/ui/popover";
+import { useCompanyStore } from "../stores/company.store";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 
 export default function RegisterPage() {
 
@@ -21,7 +24,12 @@ export default function RegisterPage() {
 
     const [showPassword, setShowPassword] = useState(false);
 
-    const {isLoading, createUser} = useAuthStore();
+    const { isLoading, createUser } = useAuthStore();
+
+    const [selectedPhonePrefix, setSelectedPhonePrefix] = useState("+1");
+    const [openPhonePrefix, setOpenPhonePrefix] = useState(false);
+    const getCountryPhonePrefix = useCompanyStore((s) => s.getCountryPhonePrefix);
+    const phonePrefixes = useCompanyStore((s) => s.phonePrefix);
 
     const handleRegister = async () => {
         if (email && password && phoneNumber && fullName) {
@@ -41,6 +49,10 @@ export default function RegisterPage() {
             toast.error("Please fill out necessary information");
         }
     }
+
+    useEffect(() => {
+        getCountryPhonePrefix();
+    }, [])
 
     return (
         <div className="h-screen p-2">
@@ -74,20 +86,42 @@ export default function RegisterPage() {
                         <Field>
                             <FieldLabel>Phone Number</FieldLabel>
                             <ButtonGroup>
-                                <Button variant={"outline"}>+62</Button>
+                                <Popover open={openPhonePrefix} onOpenChange={setOpenPhonePrefix}>
+                                    <PopoverTrigger asChild>
+
+                                        <Button variant={"outline"}>{selectedPhonePrefix}</Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent align="start">
+                                        <Command>
+                                            <CommandInput></CommandInput>
+                                            <CommandList>
+                                                <CommandEmpty>Not found</CommandEmpty>
+                                                <CommandGroup></CommandGroup>
+                                                {
+                                                    phonePrefixes.map((e, index) => (
+                                                        <CommandItem key={index} value={e.phone_prefix} onSelect={() => {
+                                                            setSelectedPhonePrefix(e.phone_prefix);
+                                                            setOpenPhonePrefix(false);
+                                                        }}><span className="border-r-1 pr-2">{e.short_name}</span>{e.phone_prefix}</CommandItem>
+                                                    ))
+                                                }
+                                            </CommandList>
+                                        </Command>
+                                    </PopoverContent>
+                                </Popover>
                                 <Input type="text" defaultValue={phoneNumber} maxLength={12} onChange={(e) => {
                                     const num = e.currentTarget.value.replace(/\D/g, "");
-                                    setPhoneNumber(num);
+                                    setPhoneNumber(selectedPhonePrefix + num);
                                 }}></Input>
                             </ButtonGroup>
                         </Field>
                         <Button onClick={handleRegister} className="bg-[#25343F] w-full cursor-pointer">{isLoading ? <Spinner></Spinner> : "Create Account"}</Button>
-                        <p>Already have an account? <Link href="/login" className="border-b-1 border-[#101010]">Click here</Link></p>
+                        <p className="text-sm text-center">Already have an account? <Link href="/login" className="border-b-1 border-[#101010] hover:text-[var(--primary)] font-bold transition">Sign In</Link></p>
                     </div>
                 </div>
-                <div className="bg-[#FF9B51] rounded-xl py-20 px-25 flex flex-col">
+                <div className="bg-[var(--primary)] h-full rounded-xl py-10 px-15 flex flex-col">
                     <p className="text-2xl uppercase font-bold text-white tracking-widest">Invoicer</p>
-                    <p>Design. Build. Repeat.</p>
+                    <p className="text-white">Design. Build. Repeat.</p>
                 </div>
             </div>
         </div>

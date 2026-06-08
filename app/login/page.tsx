@@ -36,9 +36,9 @@ export default function LoginPage() {
     return (
         <div className="h-screen p-2">
             <div className="grid grid-cols-2 h-full">
-                <div className="p-10 flex items-center justify-center">
-                    <div className="p-5 flex flex-col w-1/2 justify-center gap-5">
-                        <p className="text-3xl font-bold pb-5 text-center">Login</p>
+                <div className="p-10 flex flex-col items-center justify-center">
+                    <div className="p-5 flex flex-col w-1/2 justify-center gap-5 rounded-xl">
+                        <p className="text-3xl font-bold pb-5 text-center text-[var(--primary)]">Login</p>
                         <Field>
                             <FieldLabel>Email</FieldLabel>
                             <Input placeholder="Your email" onBlur={(e) => setEmail(e.currentTarget.value)}></Input>
@@ -59,12 +59,12 @@ export default function LoginPage() {
                             </InputGroup>
                         </Field>
                         <Button onClick={handleLogin} className="bg-[#25343F] w-full cursor-pointer">{isLoading ? <Spinner></Spinner> : "Login"}</Button>
-                        <p>Don't have any account? <Link href="/register" className="border-b-1 border-[#101010]">Click here</Link></p>
+                        <p className="text-sm text-center">Don't have any account? <Link href="/register" className="border-b-1 border-[#101010] hover:text-[var(--primary)] font-bold transition">Click here</Link></p>
                     </div>
                 </div>
-                <div className="bg-[#FF9B51] h-full rounded-xl py-10 px-15 flex flex-col">
+                <div className="bg-[var(--primary)] h-full rounded-xl py-10 px-15 flex flex-col">
                     <p className="text-2xl uppercase font-bold text-white tracking-widest">Invoicer</p>
-                    <p>Design. Build. Repeat.</p>
+                    <p className="text-white">Design. Build. Repeat.</p>
                 </div>
             </div>
         </div>
