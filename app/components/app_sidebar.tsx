@@ -116,8 +116,8 @@ export function AppSidebar() {
                                 </Collapsible> */}
                             </SidebarMenuItem>
                             <SidebarMenuItem>
-                                <SidebarMenuButton asChild className={getLink("", false)}>
-                                    <Link href="">
+                                <SidebarMenuButton asChild className={getLink("/dashboard/feedback", false)}>
+                                    <Link href="/dashboard/feedback">
                                         <UserStar></UserStar>
                                         Feedback
                                     </Link>
