@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
 
 export default function Settings() {
 
@@ -20,6 +21,8 @@ export default function Settings() {
     const isUpdating = useCompanyStore((s) => s.isUpdating);
 
     const [companyTermsAndNotes, setCompanyTermsAndNotes] = useState<Partial<CompanyData>>();
+
+    const [defaultCurrency, setDefaultCurrency] = useState("");
 
     useEffect(() => {
         getCompany();
@@ -78,28 +81,40 @@ export default function Settings() {
             </Item>
             <div>
                 <div className="flex flex-col gap-5 mt-5">
+                    <div className="grid grid-cols-2 gap-5">
+                        <div className="flex flex-col items-start gap-2.5">
+                            <p className="font-medium text-sm">Set Default Currency</p>
+                            <Popover>
+                                <PopoverTrigger asChild className="w-full">
+                                    <Button variant="outline" className="justify-between">$ USD - US Dollar<ChevronDownIcon /></Button>
+                                </PopoverTrigger>
+                                <PopoverContent align="start">
+                                    <Command>
+                                        <CommandInput></CommandInput>
+                                        <CommandList>
+                                            <CommandGroup>
+                                                {CURRENCIES.map((c) => (
+                                                    <CommandItem key={c.value} onSelect={(e) => {
+                                                        setDefaultCurrency(c.value)
+                                                    }}>{c.value + " " + c.code + " - " + c.label}</CommandItem>
+                                                ))}
+                                            </CommandGroup>
+                                        </CommandList>
+                                    </Command>
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+                        <div className="flex flex-col">
+                            <Field>
+                                <FieldLabel>Default Invoice Format</FieldLabel>
+                                <div className="flex flex-row gap-2.5 items-center">
+                                    <Input placeholder="INV" className="w-1/8" maxLength={3}></Input>
+                                    -
+                                    <Input placeholder="001" className="w-full"></Input>
 
-                    <div className="flex flex-col items-start gap-2.5">
-                        <p className="font-medium text-sm">Set Default Currency</p>
-                        <Popover>
-                            <PopoverTrigger>
-                                <Button variant="outline">$ US Dollar<ChevronDownIcon /></Button>
-                            </PopoverTrigger>
-                            <PopoverContent align="start">
-                                <Command>
-                                    <CommandInput></CommandInput>
-                                    <CommandList>
-                                        <CommandGroup>
-                                            {CURRENCIES.map((c) => (
-                                                <CommandItem key={c.value} onSelect={(e) => {
-
-                                                }}>{c.value + " " + c.label}</CommandItem>
-                                            ))}
-                                        </CommandGroup>
-                                    </CommandList>
-                                </Command>
-                            </PopoverContent>
-                        </Popover>
+                                </div>
+                            </Field>
+                        </div>
                     </div>
                     <Field>
                         <FieldLabel>Notes</FieldLabel>

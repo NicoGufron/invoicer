@@ -44,7 +44,7 @@ export default function AddPartnerDialog({id} : DialogProps) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline">Add New Partner</Button>
+                <Button variant="default">Add New Partner</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogTitle>

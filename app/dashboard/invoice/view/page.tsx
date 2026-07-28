@@ -2,13 +2,18 @@
 
 import { useInvoiceStore } from "@/app/stores/invoice.store";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Command, CommandInput } from "@/components/ui/command";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Spinner } from "@/components/ui/spinner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { formatDate } from "date-fns";
-import { ChevronDown, ChevronUp, Pencil, Trash } from "lucide-react";
+import { CalendarIcon, ChevronDown, ChevronUp, Pencil, Receipt, Search, StickyNoteIcon, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -21,6 +26,8 @@ export default function ViewInvoices() {
     const isLoading = useInvoiceStore((s) => s.isLoading);
 
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
+    const [globalFilter, setGlobalFilter] = useState("");
 
     const router = useRouter();
 
@@ -109,7 +116,7 @@ export default function ViewInvoices() {
                             <DropdownMenuContent>
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem onClick={() => router.push(`./edit/${invoice.id}`)}>
-                                        <Pencil/>Edit Invoice
+                                        <Pencil />Edit Invoice
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator></DropdownMenuSeparator>
                                     <DropdownMenuItem variant="destructive" onClick={() => {
@@ -150,6 +157,11 @@ export default function ViewInvoices() {
         getFilteredRowModel: getFilteredRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
+        onGlobalFilterChange: setGlobalFilter,
+        globalFilterFn: 'includesString',
+        state: {
+            globalFilter,
+        }
     });
 
     useEffect(() => {
@@ -159,6 +171,38 @@ export default function ViewInvoices() {
     return (
         <section className="p-6 h-screen flex flex-col">
             <h1 className="text-2xl font-bold">View Invoices</h1>
+            <div className="grid grid-cols-3 mt-5 gap-5">
+                <div className="flex flex-col gap-2.5">
+                    <p className="text-xs">Client Name</p>
+                    <InputGroup className="bg-[var(--background)]">
+                        <InputGroupAddon align={"inline-start"}><Search></Search></InputGroupAddon>
+                        <InputGroupInput onChange={(e) => setGlobalFilter(e.currentTarget.value)}></InputGroupInput>
+                    </InputGroup>
+                </div>
+                <div className="flex flex-col gap-2.5">
+                    <p className="text-xs">Issue Date</p>
+                    <Popover>
+                        <PopoverTrigger>
+                            <Button className={"w-full justify-start text-muted-foreground"} variant="outline"><CalendarIcon></CalendarIcon></Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                            <Calendar></Calendar>
+                        </PopoverContent>
+                    </Popover>
+                </div>
+                <div className="flex flex-col gap-2.5">
+                    <p className="text-xs">Due Date</p>
+                    <Popover>
+                        <PopoverTrigger>
+
+                            <Button variant="outline" className={"w-full justify-start text-muted-foreground"}><CalendarIcon></CalendarIcon></Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                            <Calendar></Calendar>
+                        </PopoverContent>
+                    </Popover>
+                </div>
+            </div>
             <div className="w-full">
                 <div className="bg-white rounded-lg border-1 border-gray-200 shadow-sm mt-5">
                     <Table className="[&_th]:px-6 [&_th]:py-3 [&_th]:text-gray-500 [&_th]:bg-gray-50 [&_td]:font-medium [&_td]:px-6 [&_td]:py-3 [&_th]:text-center text-center">
@@ -175,15 +219,23 @@ export default function ViewInvoices() {
                         </TableHeader>
                         <TableBody>
                             {
-                                table.getRowModel().rows.map((row) => (
-                                    <TableRow className="*:border-border [&>:not(:last-child)]:border-r" key={row.id}>
-                                        {row.getVisibleCells().map((cell) => (
-                                            <TableCell key={cell.id}>
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </TableCell>
-                                        ))}
+                                invoices.length > 0 ?
+                                    table.getRowModel().rows.map((row) => (
+                                        <TableRow className="*:border-border [&>:not(:last-child)]:border-r" key={row.id}>
+                                            {row.getVisibleCells().map((cell) => (
+                                                <TableCell key={cell.id}>
+                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    )) : <TableRow>
+                                        <TableCell colSpan={columns.length}>
+                                            <div className="flex flex-col items-center justify-center gap-5 p-5">
+                                                <span className="p-2.5 rounded-xl border bg-gray-500/9"><StickyNoteIcon></StickyNoteIcon></span>
+                                                <p className="font-bold">No invoices found</p>
+                                            </div>
+                                        </TableCell>
                                     </TableRow>
-                                ))
                             }
                         </TableBody>
                     </Table>

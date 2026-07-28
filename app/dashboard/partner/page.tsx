@@ -4,10 +4,12 @@ import AddPartnerDialog from "@/app/components/add_partner_dialog";
 import { usePartnerStore } from "@/app/stores/partner.store";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { createClient } from "@/lib/client";
 import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
+import { ChevronDown, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function PartnerPage() {
@@ -41,7 +43,7 @@ export default function PartnerPage() {
                 return (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant={"outline"}>Actions</Button>
+                            <Button variant={"outline"}>Actions <ChevronDown></ChevronDown></Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuGroup>
@@ -75,11 +77,19 @@ export default function PartnerPage() {
     return (
         <div className="p-6">
             <h1 className="text-2xl font-bold">Partners</h1>
-            <div className="flex flex-row justify-end">
-                <AddPartnerDialog id={""}></AddPartnerDialog>
+            <div className="flex flex-col gap-2.5 w-1/3 mt-10">
+                <p className="text-xs">Find Company</p>
+                <InputGroup className="bg-[var(--background)]">
+                    <InputGroupAddon align={"inline-start"}><Search></Search></InputGroupAddon>
+                    <InputGroupInput onChange={(e) => setGlobalFilter(e.currentTarget.value)}></InputGroupInput>
+                </InputGroup>
             </div>
             <div className="bg-white border-1 rounded-xl mt-10">
-                <Table className="[&_th]:px-6 [&_th]:py-3 [&_th]:text-gray-500 [&_th]:bg-gray-50 [&_td]:font-medium [&_td]:px-6 [&_td]:py-3 [&_th]:text-center text-center">
+
+                <div className="flex justify-end p-2.5">
+                    <AddPartnerDialog id={""}></AddPartnerDialog>
+                </div>
+                <Table className="[&_th]:px-6 [&_th]:border-t-1 [&_th]:py-3 [&_th]:text-gray-500 [&_td]:font-medium [&_td]:px-6 [&_td]:py-3 [&_th]:text-center text-center">
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id} className="">{headerGroup.headers.map((header) => (

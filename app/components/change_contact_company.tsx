@@ -100,7 +100,7 @@ export default function ChangeContactCompanyDrawer() {
                             }}></Input>
                         </ButtonGroup>
                     </Field>
-                    <Button className="bg-green-500 hover:bg-green-600" onClick={handleUpdateCompany}>{isUpdating ? <Spinner></Spinner> : "Save Changes"}</Button>
+                    <Button onClick={handleUpdateCompany}>{isUpdating ? <Spinner></Spinner> : "Save Changes"}</Button>
 
                 </div>
             </DrawerContent>

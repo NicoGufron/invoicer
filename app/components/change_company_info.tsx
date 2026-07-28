@@ -147,7 +147,7 @@ export default function ChangeCompanyInfoDrawer() {
                         <FieldLabel>City</FieldLabel>
                         <Input placeholder="Your city" value={companyData?.city ?? ""} onChange={(e) => handleChange('city', e.currentTarget.value)}></Input>
                     </Field>
-                    <Button className="bg-green-500 hover:bg-green-600" onClick={handleUpdateCompany}>{isUpdating ? <Spinner></Spinner> : "Save Changes"}</Button>
+                    <Button  onClick={handleUpdateCompany}>{isUpdating ? <Spinner></Spinner> : "Save Changes"}</Button>
                 </div>
             </DrawerContent>
         </Drawer>

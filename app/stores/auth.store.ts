@@ -17,7 +17,7 @@ type AuthStore = {
     initialize: () => void;
     createUser: (email: string, password: string, metadata: UserMetadata) => Promise<boolean>;
     updateUserProfile : (payload: any) => void;
-    updateUserPassword: (password: string) => void;
+    updateUserPassword: (password: string) => Promise<boolean>;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -126,10 +126,22 @@ export const useAuthStore = create<AuthStore>()(
                     password: password,
                     // nonce: 
                 })
+
+                if (error) {
+                    if (error.code === "same_password") {
+                        toast.error("Password cannot be the same as before")
+                        return false;
+                    }
+                    toast.error(`Something went wrong: ${error.message}`)
+                    return false;
+                }
+
+                return true;
             } catch (err: any) {
                 toast.error(err.message);
+                return false;
             } finally {
-
+                set({isUpdatingProfile: false});
             }
         },
 

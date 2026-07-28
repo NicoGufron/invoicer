@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
-import { Eye, EyeOffIcon } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useAuthStore } from "../stores/auth.store";
 import { toast } from "sonner";
@@ -29,7 +29,7 @@ export default function LoginPage() {
             if (res) router.push("/dashboard/home");
 
         } else {
-            toast.error("Please input credentials to continue")
+            toast.success("Please input credentials to continue")
         }
     }
 
@@ -50,7 +50,7 @@ export default function LoginPage() {
                                 <InputGroupAddon align={"inline-end"}>
                                     <InputGroupButton onClick={() => setShowPassword(!showPassword)}>
                                         {
-                                            showPassword ? <EyeOffIcon></EyeOffIcon> :
+                                            showPassword ? <EyeOff></EyeOff> :
                                                 <Eye></Eye>
 
                                         }

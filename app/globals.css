@@ -60,6 +60,7 @@
   --primary: #25343F;
   --primary-foreground: oklch(0.985 0 0);
   --green: #3A8C73;
+  --green-icon: rgb(16 185 129);
   --green-tint: #E6F5F0;
   --surface: #F7F8F6;
   --white: #ffffff;
@@ -99,6 +100,7 @@
   --primary-foreground: oklch(0.21 0.006 285.885);
   --secondary: oklch(0.274 0.006 286.033);
   --green: #3A8C73;
+  --green-icon: rgb(16 185 129);
   --green-tint: #E6F5F0;
   --surface: #F7F8F6;
   --white: #ffffff;
@@ -176,7 +178,7 @@ body {
   position: absolute;
   top: 55px;
   right: 0;
-  left: 56px;
+  left: 30px;
   height: 2px;
   background: rgba(255,255,255,0.04);
 }

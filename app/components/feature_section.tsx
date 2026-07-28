@@ -17,7 +17,7 @@ export default function FeatureSection() {
             dark: false,
         },
         {
-            title: "Send by email",
+            title: "Send by email (in progress)",
             subtitle: "Deliver invoices directly from Invoicer. No copy-paste, no third-party email setup — just one click to send.",
             icon: "✉️",
             dark: true,

@@ -35,7 +35,7 @@ export default async function ProfilePage() {
                             <Item variant={"outline"} className="bg-blue-50 w-full">
                                 <ItemMedia><Info size={16}></Info></ItemMedia>
                                 <ItemContent>
-                                    <ItemTitle>Personal Profile Information</ItemTitle>
+                                    <ItemTitle className="font-bold">Personal Profile Information</ItemTitle>
                                     <ItemDescription className="text-black">Login Invoicer using <b>Email</b> and <b>Password</b></ItemDescription>
                                 </ItemContent>
                             </Item>

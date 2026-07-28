@@ -23,7 +23,7 @@ export default function CompanyInfo() {
             <Item variant={"outline"} className="bg-blue-50 w-full">
                 <ItemMedia><Info size={16}></Info></ItemMedia>
                 <ItemContent>
-                    <ItemTitle>Company Profile Information</ItemTitle>
+                    <ItemTitle className="font-bold">Company Profile Information</ItemTitle>
                     <ItemDescription className="text-black">Create invoices using your company's information</ItemDescription>
                 </ItemContent>
             </Item>

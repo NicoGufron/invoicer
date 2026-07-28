@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/app/stores/auth.store";
 import { Button } from "@/components/ui/button";
 import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@/components/ui/item";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createClient } from "@/lib/server";
 import { AlertCircle, AlertCircleIcon, ArrowRight, Banknote, Info } from "lucide-react";
 import Link from "next/link";
@@ -34,28 +35,35 @@ export default async function Home() {
 
             </div>
             <div className="my-5">
-                <p className="text-xl font-bold">Overview</p>
-                <div className="grid grid-cols-4 mt-3 space-x-5">
-                    <Item variant={"outline"} className="bg-white">
-                        <ItemContent>
-                            {/* <ItemTitle>Total Billed</ItemTitle> */}
-                            <span className="flex flex-row items-center justify-between space-x-5">
-                                <p className="text-muted-foreground">Total Billed</p>
-                                <Banknote></Banknote>
-                            </span>
-                            <p className="text-2xl font-bold">$15,000</p>
-
-                        </ItemContent>
-                    </Item>
-                    <Item variant={"outline"} className="bg-white">
-                        <ItemContent>
-                            {/* <ItemTitle>Total Collected</ItemTitle> */}
-                            <p className="text-muted-foreground">Total Collected</p>
-                            <p className="text-2xl font-bold">$1,500</p>
-                        </ItemContent>
-                    </Item>
-
-                </div>
+                <p className="text-xl font-bold">Dashboard</p>
+                <Tabs>
+                    <TabsList defaultValue={"today"}>
+                        <TabsTrigger value={"today"}>Today</TabsTrigger>
+                        <TabsTrigger value={"weekly"}>7 Days</TabsTrigger>
+                        <TabsTrigger value={"monthly"}>30 Days</TabsTrigger>
+                        <TabsTrigger value={"threemonth"}>90 Days</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="today">
+                        <div className="grid grid-cols-4 gap-5">
+                            <div className="flex flex-col justify-between border border-white/8 rounded-lg p-5 bg-[var(--card)] shadow-md space-y-2.5 hover:-translate-y-1 transition-all hover:shadow-lg">
+                                <p className="font-bold text-sm">Payments Due</p>
+                                <p className="text-2xl font-bold">$18,101</p>
+                            </div>
+                            <div className="flex flex-col justify-between border border-white/8 rounded-lg p-5 bg-[var(--card)] shadow-md space-y-2.5 hover:-translate-y-1 transition-all hover:shadow-lg">
+                                <p className="font-bold text-sm">Total to be paid</p>
+                                <p className="text-2xl font-bold">$18,101</p>
+                            </div>
+                            <div className="flex flex-col justify-between border border-white/8 rounded-lg p-5 bg-[var(--card)] shadow-md space-y-2.5 hover:-translate-y-1 transition-all hover:shadow-lg">
+                                <p className="font-bold text-sm">Total to be paid</p>
+                                <p className="text-2xl font-bold">$18,101</p>
+                            </div>
+                            <div className="flex flex-col justify-between border border-white/8 rounded-lg p-5 bg-[var(--card)] shadow-md space-y-2.5 hover:-translate-y-1 transition-all hover:shadow-lg">
+                                <p className="font-bold text-sm">Total to be paid</p>
+                                <p className="text-2xl font-bold">$18,101</p>
+                            </div>
+                        </div>
+                    </TabsContent>
+                </Tabs>
             </div>
             <hr className="my-5"></hr>
             <div className="">
@@ -66,7 +74,7 @@ export default async function Home() {
                         <Link href="/dashboard/invoice/create">
                             <ItemContent>
                                 <ItemTitle>Create New Invoice</ItemTitle>
-                                {/* <ItemDescription>This one speaks for itself</ItemDescription> */}
+                                <ItemDescription>Create and send invoice to your partner</ItemDescription>
                             </ItemContent>
                             <ItemActions>
                                 <ArrowRight></ArrowRight>
