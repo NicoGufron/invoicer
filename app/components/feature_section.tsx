@@ -43,7 +43,7 @@ export default function FeatureSection() {
     ]
 
     return (
-        <section className="max-w-[1200px] pt-[148px] px-[5%] pb-[100px]" style={{ margin: "0 auto" }} id="features">
+        <section className="max-w-[1200px] pt-[148px] px-[5%] pb-[100px] m-auto" id="features">
             <div className="uppercase tracking-wide text-sm font-bold text-[var(--green)] pb-5">Features</div>
             <div className="text-3xl font-bold">Everything you need, <br></br>nothing you don't.</div>
             <div className="text-md max-w-[500px] pt-5">Invoicer strips invoice management down to its essentials — fast creation, clean exports, and partner memory that saves you time.</div>

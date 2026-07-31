@@ -3,6 +3,7 @@ import HeroSection from "./components/hero_section";
 import FeatureSection from "./components/feature_section";
 import HowToSection from "./components/how_to_section";
 import GetStartedSection from "./components/get_started_section";
+import FaqSection from "./components/faq_section";
 
 export default function Home() {
 
@@ -30,6 +31,7 @@ export default function Home() {
 
       <FeatureSection></FeatureSection>
       <HowToSection></HowToSection>
+      <FaqSection></FaqSection>
       <GetStartedSection></GetStartedSection>
     </div>
   );

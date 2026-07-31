@@ -1,17 +1,66 @@
 "use client";
 
 import { fmt, formatDate } from "@/lib/utils";
-import { LineItem, useInvoiceStore } from "../stores/invoice.store";
-import { forwardRef, useEffect } from "react";
+import { InvoiceData, LineItem, useInvoiceStore } from "../stores/invoice.store";
+import { forwardRef, useEffect, useState } from "react";
 
 const InvoicePreviewHero = forwardRef<HTMLDivElement>((_, ref) => {
-    const invoice = useInvoiceStore((s) => s.invoice);
-    const updateInvoice = useInvoiceStore((s) => s.updateInvoice);
-    // const { subtotal, discountAmt, taxAmt, total } = useInvoiceTotals();
 
-    const { items, discountRate, currency } = invoice;
-    // const discountAmt = subtotal * (discountRate / 100);
-    // const taxableAmt = subtotal - discountAmt;
+    const demoInvoiceData: InvoiceData = {
+        userId: "",
+        companyName: "Acme Corporation",
+        companyAddress: "123 Main St, City, State 00000",
+        companyEmail: "hello@yourcompany.com",
+        companyNumber: "",
+        partnerId: 0,
+        totalAmount: 0,
+        clientName: "Wile E.Coyote",
+        clientAddress: "456 Client Ave, City, State 00000",
+        clientEmail: "client@example.com",
+        clientNumber: "",
+        invoiceNumber: "INV/" + "2026" + "/001",
+        issueDate: new Date().toISOString().split("T")[0],
+        dueDate: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
+        logoUrl: null,
+        items: [
+            {
+                id: "1",
+                name: "Web Development",
+                description: "Frontend implementation and integration",
+                discountType: "nominal",
+                quantity: 1,
+                discount: 0,
+                rate: 500
+            },
+            {
+                id: "2",
+                name: "UI/UX Design",
+                description: "Wireframes and high-fidelity mockups",
+                discountType: "nominal",
+                quantity: 2,
+                discount: 20,
+                rate: 150
+            },
+            {
+                id: "3",
+                name: "Consultation",
+                description: "Technical Planning Session",
+                discountType: "percentage",
+                quantity: 1,
+                discount: 10,
+                rate: 100
+            }
+        ],
+        // taxRate: 0,
+        discountRate: 0,
+        notes: "Thank you for your business. Please remit payment within the due date to avoid any late fees.",
+        terms: "Payment is due within 30 days of the invoice date. Late payments may be subject to a 1.5% monthly interest charge.",
+        currency: "USD",
+    }
+
+    const [invoice, setInvoice] = useState<InvoiceData>(demoInvoiceData);
+
+    const { items, currency } = invoice;
 
     const itemAmount = (item: LineItem) => {
         const gross = item.quantity * item.rate;
@@ -31,20 +80,13 @@ const InvoicePreviewHero = forwardRef<HTMLDivElement>((_, ref) => {
     }, 0)
 
     const afterDiscount = subtotal - totalDiscounts;
-    // const taxAmt = afterDiscount * (taxRate / 100);
     const total = afterDiscount;
 
-    useEffect(() => {
-        updateInvoice({
-            ['totalAmount'] : total
-        })
-    }, [total]);
-
     return (
-        <div ref={ref} className="bg-white w-[1/2] h-screen flex flex-col text-[#1a1a1a] overflow-hidden">
-            <div className="h-0 w-full bg-primary flex-shrink-0">
-                <div className="flex flex-col flex-1 p-14">
-                    <div className="flex justify-between items-start mb-12">
+        <div ref={ref} className="h-screen flex flex-col text-[#1a1a1a]">
+            <div className="h-1.5 w-full bg-primary flex-shrink-0">
+                <div className="flex flex-col flex-1 p-5">
+                    <div className="flex justify-between items-start mb-10">
                         <div>
                             {invoice.logoUrl && (
                                 <img src={invoice.logoUrl} alt="logo" className="h-15 w-auto object-contain mb-3"></img>
@@ -170,21 +212,17 @@ const InvoicePreviewHero = forwardRef<HTMLDivElement>((_, ref) => {
                             </div>
                         </div>
                     </div>
-                    {/* {(invoice.notes || invoice.terms) && ( */}
-                        <div className="mt-auto py-6 border-t border-[#ebebeb] grid grid-cols-2 gap-8 text-xs">
-                            {/* {invoice.notes && ( */}
-                            <div>
-                                <div className="text-[10px] uppercase tracking-[0.13em] text-[#aaa] mb-1.5">Notes</div>
-                                <p className="text-[10px] text-[#666] leading-relaxed whitespace-pre-wrap">{invoice.notes}</p>
-                            </div>
-                            {/* )} */}
-                            {/* {invoice.terms && ( */}
-                            <div>
-                                <div className="text-[10px] uppercase tracking-[0.13em] text-[#aaa] mb-1.5">Terms</div>
-                                <p className="text-[10px] text-[#666] leading-relaxed whitespace-pre-wrap">{invoice.terms}</p>
-                            </div>
-                            {/* )} */}
+                    <div className="py-6 border-t border-[#ebebeb] grid grid-cols-2 gap-8 text-xs">
+                        <div>
+                            <div className="text-[10px] uppercase tracking-[0.13em] text-[#aaa] mb-1.5">Notes</div>
+                            <p className="text-[10px] text-[#666] leading-relaxed whitespace-pre-wrap">{invoice.notes}</p>
                         </div>
+                        <div>
+                            <div className="text-[10px] uppercase tracking-[0.13em] text-[#aaa] mb-1.5">Terms</div>
+                            <p className="text-[10px] text-[#666] leading-relaxed whitespace-pre-wrap">{invoice.terms}</p>
+                        </div>
+                        {/* )} */}
+                    </div>
                     {/* )} */}
                 </div>
                 {/* <div className="h-1.5 w-full bg-primary flex-shrink-0" /> */}
