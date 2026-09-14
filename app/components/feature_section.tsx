@@ -43,12 +43,12 @@ export default function FeatureSection() {
     ]
 
     return (
-        <section className="max-w-[1200px] pt-[148px] px-[5%] pb-[100px] m-auto" id="features">
-            <div className="uppercase tracking-wide text-sm font-bold text-[var(--green)] pb-5">Features</div>
+        <section className="pt-[148px] px-[5%] pb-[100px] m-auto bg-[#F2EFFF]" id="features">
+            <div className="uppercase tracking-wide text-sm font-bold text-[var(--primary)] pb-5">Bespoke Financial Tooling</div>
             <div className="text-3xl font-bold">Everything you need, <br></br>nothing you don't.</div>
             <div className="text-md max-w-[500px] pt-5">Invoicer strips invoice management down to its essentials — fast creation, clean exports, and partner memory that saves you time.</div>
 
-            <div className="grid grid-cols-3 pt-10 gap-5 max-w-[1200px] m-auto">
+            <div className="grid grid-cols-3 pt-10 gap-5  m-auto">
                 {features.map((e, index) => (
                     <FeatureCard key={index} title={e.title} subtitle={e.subtitle} icon={e.icon} dark={e.dark}></FeatureCard>
 

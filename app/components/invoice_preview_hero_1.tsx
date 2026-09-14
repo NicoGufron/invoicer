@@ -41,7 +41,7 @@ const InvoicePreviewHero1 = forwardRef<HTMLDivElement>((_, ref) => {
     }, [total]);
 
     return (
-        <div ref={ref} className="bg-white w-[1/2] h-[1/3] flex flex-col text-[#1a1a1a] overflow-hidden">
+        <div ref={ref} className="bg-white w-[1/2] h-[1/3] flex flex-col text-[#1a1a1a] overflow-hidden shadow-lg rounded-lg">
             {/* Minimal top rule — single pixel, neutral */}
             <div className="h-px w-full bg-[#e0e0e0] flex-shrink-0" />
 

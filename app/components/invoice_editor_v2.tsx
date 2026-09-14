@@ -27,10 +27,11 @@ interface Props {
     id?: string,
     showPreview: boolean,
     onPreview: () => void,
+    demo?: boolean,
     previewRef: React.RefObject<HTMLDivElement | null>;
 }
 
-export default function InvoiceEditorV2({ user, id, previewRef, showPreview, onPreview }: Props) {
+export default function InvoiceEditorV2({ user, id, previewRef, showPreview, demo, onPreview }: Props) {
 
     const invoice = useInvoiceStore((s) => s.invoice);
     // const editInvoice = useInvoiceStore((s) => s.invoice);
@@ -137,7 +138,7 @@ export default function InvoiceEditorV2({ user, id, previewRef, showPreview, onP
 
     return (
         <div className="flex flex-col gap-6 p-5">
-            <div className="flex flex-row gap-5 items-center justify-end">
+            {demo ? null : <div className="flex flex-row gap-5 items-center justify-end">
                 <Button variant="outline" onClick={() => handleSaveDraft(id)}><Save></Save>Save as Draft</Button>
                 <Button variant="outline" onClick={onPreview}><EyeIcon></EyeIcon>{showPreview ? "Close Preview" : "Preview PDF"}</Button>
                 <DropdownMenu>
@@ -151,9 +152,11 @@ export default function InvoiceEditorV2({ user, id, previewRef, showPreview, onP
                     </DropdownMenuContent>
                 </DropdownMenu>
 
-            </div>
-            <hr></hr>
-            <LogoSection></LogoSection>
+                <hr></hr>
+            </div>}
+
+            {demo ? null : <LogoSection></LogoSection>}
+
             {/* <hr></hr> */}
             <MetaSection></MetaSection>
             <hr></hr>
@@ -374,7 +377,7 @@ function MetaSection() {
 
     return (
         <div>
-            <p className="text-xl font-bold">Invoice Details</p>
+            <p className="text-xl font-bold text-[var(--primary)]">Invoice Details</p>
             <div className="flex flex-col gap-3 py-5">
                 <Field className="w-1/2">
                     <FieldLabel>Invoice Number</FieldLabel>
@@ -463,7 +466,7 @@ function MetaSection() {
                                 </Command>
                             </PopoverContent>
                         </Popover>
-                        <Button className="bg-[#25343F]">Create new Partner</Button>
+                        <Button className="bg-[var(--primary)]">Create new Partner</Button>
                     </Field>
                 </div>
             </div>
@@ -596,7 +599,7 @@ function LineItemsSections() {
 
     return (
         <div>
-            <p className="text-xl font-bold">Items</p>
+            <p className="text-xl font-bold text-[var(--primary)]">Items</p>
             {/* <div className="flex flex-col gap-2">
                 <div className="grid grid-cols-[0.75fr_1.25fr_3.5rem_8rem_8rem_2.5rem] gap-2 px-1 mt-5">
                     {["Name", "Description", "Quantity", "Discount", "Rate", ""].map((h) => (
@@ -610,7 +613,7 @@ function LineItemsSections() {
                     <Plus></Plus> Add Item
                 </Button>
             </div> */}
-            <Table className="[&_th]:bg-[#25343F] [&_th]:text-white mt-5">
+            <Table className="[&_th]:bg-[var(--primary)] [&_th]:text-white mt-5">
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-[180px]">Name</TableHead>
@@ -627,7 +630,7 @@ function LineItemsSections() {
                     ))}
                 </TableBody>
             </Table>
-            <Button variant={"outline"} onClick={addItem} className="gap-2 border-dashed mt-1">
+            <Button variant={"default"} onClick={addItem} className="gap-2 border-dashed mt-1">
                 <Plus></Plus> Add Item
             </Button>
         </div>

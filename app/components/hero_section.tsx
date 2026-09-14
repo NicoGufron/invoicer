@@ -10,12 +10,12 @@ export default function HeroSection() {
             <div className="flex flex-col items-center justify-center gap-5">
 
                 <div className="flex flex-col items-center gap-5">
-                    <div className="rounded-xl bg-[var(--green-tint)] p-2.5 font-bold">
-                        <p className="uppercase text-xs text-[var(--green)] tracking-wide">Built for freelancers & small teams</p>
+                    <div className="rounded-xl bg-[var(--primary)] p-2.5 font-bold">
+                        <p className="uppercase text-xs text-white tracking-wide">Built for freelancers & small teams</p>
                     </div>
-                    <p className="text-5xl text-[var(--primary)] font-bold">Invoicing that <span className="text-[var(--green)]">actually</span> works.</p>
-                    <p className="text-center w-1/2">Create, customize, and send professional invoices in minutes. With live preview, PDF export, partner management, and multi-currency support — everything in one place.</p>
-                    <div className="flex flex-col items-center gap-5">
+                    <p className="text-5xl font-bold text-center">Create Professional Invoices in Seconds, <span className="text-[var(--primary)]"><br></br>Get Paid Faster</span></p>
+                    <p className="text-center w-1/2">The intuitive invoicing tool built for freelancers, agencies, and growing businesses. Real-time preview, instant PDF & JSON export, smart tax & discount calculations, and client partner management.</p>
+                    <div className="flex flex-row items-center gap-5">
                         <Link href="/login"><Button className="p-5">Start for free <span>→</span></Button></Link>
                         <Link href="/"><Button className="p-5" variant={"outline"}>See features</Button></Link>
                     </div>

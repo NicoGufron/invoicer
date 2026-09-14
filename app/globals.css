@@ -57,13 +57,14 @@
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: #25343F;
+  --primary: #4338CA;
   --primary-foreground: oklch(0.985 0 0);
   --green: #3A8C73;
   --green-icon: rgb(16 185 129);
   --green-tint: #E6F5F0;
   --surface: #F7F8F6;
   --white: #ffffff;
+  --secondary: #059669;
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.967 0.001 286.375);
   --muted-foreground: oklch(0.552 0.016 285.938);
