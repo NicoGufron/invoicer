@@ -24,9 +24,9 @@ export default function HowToSection() {
 
     return (
         <section className="bg-[var(--primary)] pt-[100px] px-[5%]" id="how">
-            <div className="max-w-[1200px]" style={{ margin: "0 auto" }}>
+            <div className="m-auto">
 
-                <div className="uppercase tracking-wide text-sm font-bold text-[var(--green)] pb-5">How It Works</div>
+                <div className="uppercase tracking-wide text-sm font-bold text-[var(--white)] pb-5">How It Works</div>
                 <div className="text-3xl font-bold text-white">From blank to sent <br></br>in four steps.</div>
 
                 <div className="steps">

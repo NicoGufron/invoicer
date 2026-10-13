@@ -193,7 +193,7 @@ body {
   height: 32px;
   border-radius: 50%;
   border: 1.5px solid gray;
-  color: var(--green);
+  color: var(--white);
   z-index: 1;
   position: relative;
   display: flex;
@@ -208,7 +208,7 @@ body {
 }
 
 .step-desc {
-  color: gray;
+  color: var(--white);
   line-height: 1.65;
   font-size: 13px;
 }

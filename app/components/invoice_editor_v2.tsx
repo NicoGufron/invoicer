@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { InvoiceData, LineItem, useInvoiceStore } from "../stores/invoice.store";
 import { Input } from "@/components/ui/input";
-import { Check, ChevronDown, ChevronDownIcon, EyeIcon, FileJson, NotepadTextDashed, Plus, Receipt, Save, Send, Trash2, Upload, X } from "lucide-react";
+import { Check, ChevronDown, ChevronDownIcon, EyeIcon, FileJson, NotepadTextDashed, PhoneForwarded, Plus, Receipt, Save, Send, Trash2, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
@@ -158,11 +158,11 @@ export default function InvoiceEditorV2({ user, id, previewRef, showPreview, dem
             {demo ? null : <LogoSection></LogoSection>}
 
             {/* <hr></hr> */}
-            <MetaSection></MetaSection>
+            <MetaSection demo={demo}></MetaSection>
             <hr></hr>
             <div className="grid md:grid-cols-2 grid-cols-1 space-x-15">
                 <SenderSection user={user} id={id}></SenderSection>
-                <ClientSection></ClientSection>
+                {/* {demo ? <DemoClientSection /> : <ClientSection></ClientSection>} */}
             </div>
             <hr></hr>
             <LineItemsSections></LineItemsSections>
@@ -319,7 +319,59 @@ function ClientSection() {
     );
 }
 
-function MetaSection() {
+function DemoClientSection() {
+    const demoClients =
+    {
+        clientName: "Acme Company",
+        clientEmail: "contact@acme.com",
+        clientAddress: "123 Main St, Anytown, USA",
+        clientNumber: "(555) 123-4567"
+    }
+
+
+    return (
+        <div>
+            <p className="text-xl font-bold flex-1 text-[var(--primary)]">Client Details</p>
+            <hr className="my-5"></hr>
+            <div className="flex flex-col gap-3 py-5">
+                <FieldGroup>
+
+                    <Field>
+                        <p className="text-[var(--primary)] font-bold text-lg">{demoClients.clientName}</p>
+                        <span className="text-sm flex flex-col pt-5">
+
+                            <p>Email: {demoClients.clientEmail}</p>
+                            <p>Tel: {demoClients.clientNumber}</p>
+                            <p>Address: {demoClients.clientAddress}</p>
+                        </span>
+
+                    </Field>
+                </FieldGroup>
+            </div>
+        </div>
+    )
+}
+
+type PartnerOption = Pick<Partner, "id" | "name" | "email" | "phone" | "address">;
+
+const DEMO_PARTNERS: PartnerOption[] = [
+    {
+        id: 1,
+        name: "Acme Company",
+        email: "contact@acme.com",
+        phone: "(555) 123-4567",
+        address: "123 Main St, Anytown, USA",
+    },
+    {
+        id: 2,
+        name: "Northstar Studio",
+        email: "hello@northstar.example",
+        phone: "(555) 987-6543",
+        address: "42 Market Street, Anytown, USA",
+    },
+];
+
+function MetaSection({ demo = false }: { demo?: boolean }) {
     const invoiceNumber = useInvoiceStore((s) => s.invoice.invoiceNumber);
     const issueDate = useInvoiceStore((s) => s.invoice.issueDate);
     const dueDate = useInvoiceStore((s) => s.invoice.dueDate);
@@ -331,49 +383,37 @@ function MetaSection() {
     const [dueDateOpen, setDueDateOpen] = useState(false);
 
 
-    const handleChange = (key: keyof InvoiceData, e: any) => {
+    const handleChange = (
+        key: "invoiceNumber" | "issueDate" | "dueDate",
+        value: string | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        const nextValue = typeof value === "string" ? value : value.currentTarget.value;
         updateInvoice({
-            [key]: e
+            [key]: nextValue
         })
     }
-
-    const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
 
     const [openPartner, setOpenPartner] = useState(false);
 
-    const { getPartners } = usePartnerStore();
-    const partners = usePartnerStore((s) => s.partners);
+    const getPartners = usePartnerStore((s) => s.getPartners);
+    const storedPartners = usePartnerStore((s) => s.partners);
+    const partners: PartnerOption[] = demo ? DEMO_PARTNERS : storedPartners;
+    const selectedPartner = partners.find((partner) => partner.id === invoice.partnerId) ?? null;
 
     useEffect(() => {
-        const fetchPartners = async () => {
-            await getPartners();
-        }
-
-        fetchPartners();
-    }, [])
+        if (!demo) void getPartners();
+    }, [demo, getPartners])
 
     useEffect(() => {
         if (!selectedPartner) return;
-        handleChangePartner('clientName', selectedPartner.name);
-        handleChangePartner('clientEmail', selectedPartner.email);
-        handleChangePartner('clientAddress', selectedPartner.address);
-        handleChangePartner('clientNumber', selectedPartner.phone);
-
-    }, [selectedPartner])
-
-    useEffect(() => {
-        if (!invoice.partnerId || partners.length === 0) return;
-
-        const partnerFound = partners.find((p) => p.id === invoice.partnerId);
-        if (partnerFound) setSelectedPartner(partnerFound);
-    }, [invoice.partnerId, partners])
-
-    const handleChangePartner = (key: keyof InvoiceData, e: any) => {
         updateInvoice({
-            [key]: e
-        })
-    }
+            clientName: selectedPartner.name,
+            clientEmail: selectedPartner.email,
+            clientAddress: selectedPartner.address,
+            clientNumber: selectedPartner.phone,
+        });
 
+    }, [selectedPartner, updateInvoice])
 
     return (
         <div>
@@ -447,10 +487,10 @@ function MetaSection() {
                                 <Command>
                                     <CommandInput></CommandInput>
                                     <CommandList>
+
                                         {partners.map((partner) => (
                                             <CommandItem key={partner.id} keywords={[partner.name]} onSelect={(e) => {
-                                                setSelectedPartner(partner);
-                                                handleChangePartner("partnerId", partner.id);
+                                                updateInvoice({ partnerId: partner.id });
                                                 setOpenPartner(false);
                                             }}>
                                                 <span className="flex flex-col">

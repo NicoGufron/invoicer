@@ -36,9 +36,20 @@ export default function LoginPage() {
     return (
         <div className="h-screen p-2">
             <div className="grid grid-cols-2 h-full">
-                <div className="p-10 flex flex-col items-center justify-center">
+                <div className="flex flex-col items-center justify-center">
                     <div className="p-5 flex flex-col w-1/2 justify-center gap-5 rounded-xl">
-                        <p className="text-3xl font-bold pb-5 text-center text-[var(--primary)]">Login</p>
+                        <p className="text-3xl font-bold text-center text-[var(--primary)]">Login</p>
+                        <p className="text-sm pb-5 text-center text-muted-foreground">Welcome back!</p>
+                        {/* <div className="grid grid-cols-2 gap-5">
+                            <Button variant="outline" className="w-full">Google</Button>
+                            <Button variant="outline" className="w-full">Github</Button>
+
+                        </div>
+                        <span className="grid grid-cols-3 gap-4 my-2 items-center">
+                            <div className="h-px flex-1 bg-gray-200"></div>
+                            <span className="uppercase text-muted-foreground text-xs whitespace-nowrap">or continue with</span>
+                            <div className="h-px flex-1 bg-gray-200"></div>   
+                        </span> */}
                         <Field>
                             <FieldLabel>Email</FieldLabel>
                             <Input placeholder="Your email" onBlur={(e) => setEmail(e.currentTarget.value)}></Input>
@@ -58,7 +69,7 @@ export default function LoginPage() {
                                 </InputGroupAddon>
                             </InputGroup>
                         </Field>
-                        <Button onClick={handleLogin} className="bg-[#25343F] w-full cursor-pointer">{isLoading ? <Spinner></Spinner> : "Login"}</Button>
+                        <Button onClick={handleLogin} className="bg-[var(--primary)] w-full cursor-pointer">{isLoading ? <Spinner></Spinner> : "Login"}</Button>
                         <p className="text-sm text-center">Don't have any account? <Link href="/register" className="border-b-1 border-[#101010] hover:text-[var(--primary)] font-bold transition">Click here</Link></p>
                     </div>
                 </div>

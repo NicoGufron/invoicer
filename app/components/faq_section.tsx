@@ -21,7 +21,7 @@ export default function FaqSection() {
         {
             value: "freeinvoicer",
             question: "Is Invoicer really free to start?",
-            answer: "Yes, generate up to 5 invoices every month at zero cost with full PDF and JSON export features. No credit card is required when signing up."
+            answer: "Yes, generate up to unlimited invoices at zero cost with full PDF and JSON export features. No credit card is required when signing up."
         },
         {
             value: "multiplepartner",
