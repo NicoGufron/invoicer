@@ -105,6 +105,8 @@ interface InvoiceStore {
     updateItem: (id: string, patch: Partial<LineItem>) => void;
 
     setLogo: (url: string | null) => void;
+    saveLogo: (file: File) => Promise<boolean>;
+    getLogo: () => void;
 
     resetInvoice: () => void;
 
@@ -168,6 +170,24 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
         }))
     },
 
+    getLogo: async () => {
+        const supabase = createClient();
+        try {
+            const { data : company} = await supabase.from('company_profile').select('company_logo').single();
+            if (company) {
+                const { data } = supabase.storage.from('logo').getPublicUrl(company.company_logo);
+                set((state) => ({
+                    invoice: {
+                        ...state.invoice,
+                        logoUrl: data?.publicUrl
+                    }
+                }))
+            }
+        } catch (error) {
+            toast.error("Failed to fetch logo");
+        }
+    },
+
     setLogo: (url) => {
         set((state) => ({
             invoice: {
@@ -175,6 +195,34 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
                 logoUrl: url
             }
         }))
+    },
+
+    saveLogo: async (file) => {
+        const supabase = createClient();
+        if (!file) return false;
+
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return false;
+
+            const ext = file.name.split('.').pop();
+            const path = `${user.id}/${Date.now()}.${ext}`;
+
+            const { error } = await supabase.storage.from('logo').upload(path, file);
+            if (error) {
+                toast.error("Failed to upload logo");
+                console.error(error);
+                return false;
+            }
+
+            await supabase.from('company_profile').update({ company_logo: path }).eq('user_id', user.id);
+
+            return true;
+
+        } catch (error: any) {
+            toast.error("Error: ", error);
+            return false;
+        }
     },
 
     resetInvoice: () => {

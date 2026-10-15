@@ -12,6 +12,7 @@ export interface CompanyData {
     companyPhoneNumber: string,
     companyAddress: string,
     country: string,
+    companyUrl? : string,
     city: string,
     default_terms: string,
     default_notes: string,

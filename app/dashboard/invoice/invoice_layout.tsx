@@ -14,8 +14,6 @@ export default function InvoiceLayout({ user, id }: Props ) {
     const previewRef = useRef<HTMLDivElement>(null);
     const [showPreview, setShowPreview] = useState(false);
 
-    console.log(showPreview);
-
     return (
         <div className="flex flex-row gap-5 flex-1">
             <div className="border flex-1 rounded-xl bg-white mb-5 shadow-xl overflow-y-auto">
@@ -30,7 +28,7 @@ export default function InvoiceLayout({ user, id }: Props ) {
             </div>
             {/* <InvoicePreview ref={previewRef}></InvoicePreview> */}
             {/* <div className="fixed -left-[9999px] -top-[9999px]"> */}
-            <div style={{display: showPreview ? "block" : "none"}} className="border shadow-xl rounded-xl bg-white mb-5 p-5 sticky top-0 h-screen overflow-y-auto">
+            <div style={showPreview ? undefined : { position: "fixed", left: "-9999px", width: 600}} className={`border shadow-xl rounded-xl bg-white mb-5 p-5 top-0 h-screen overflow-y-auto ${showPreview ? 'sticky' : ''}`} aria-hidden={!showPreview}>
                 {/* <p className="mb-5 font-bold text-lg">Live Preview</p> */}
                 <InvoicePreview ref={previewRef}></InvoicePreview>
             </div>

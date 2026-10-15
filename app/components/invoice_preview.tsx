@@ -47,7 +47,7 @@ const InvoicePreview = forwardRef<HTMLDivElement>((_, ref) => {
                     <div className="flex justify-between items-start mb-12">
                         <div>
                             {invoice.logoUrl && (
-                                <img src={invoice.logoUrl} alt="logo" className="h-15 w-auto object-contain mb-3"></img>
+                                <img src={invoice.logoUrl} alt="logo" className="h-30 w-auto object-contain mb-3"></img>
                             )}
                             <div className="text-2xl font-bold tracking-tight leading-none">
                                 {invoice.companyName || "Your Company"}
