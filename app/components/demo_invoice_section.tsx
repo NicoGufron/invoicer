@@ -1,12 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
-import InvoicePreview from "./invoice_preview";
+import { useState } from "react";
 import InvoiceEditorV2 from "./invoice_editor_v2";
 import InvoicePreviewHero1 from "./invoice_preview_hero_1";
 
 export default function DemoInvoiceSection() {
-    const previewRef = useRef<HTMLDivElement>(null);
     const [showPreview, setShowPreview] = useState(false);
 
     return (
@@ -16,7 +14,7 @@ export default function DemoInvoiceSection() {
             <div className="text-md max-w-[500px] pt-5">Update values on the left editor and watch the document compute totals in real time.</div>
             <div className="grid grid-cols-2 items-start gap-5 pt-5">
                 <div className="bg-[#FFFFFF] rounded-xl shadow-lg">
-                    <InvoiceEditorV2 user={undefined} demo previewRef={previewRef} showPreview={showPreview} onPreview={() => setShowPreview(prev => !prev)}></InvoiceEditorV2>
+                    <InvoiceEditorV2 user={undefined} demo showPreview={showPreview} onPreview={() => setShowPreview(prev => !prev)}></InvoiceEditorV2>
                 </div>
                 <div className="sticky top-5 max-h-[calc(100vh-2.5rem)] overflow-y-auto shadow-lg">
 

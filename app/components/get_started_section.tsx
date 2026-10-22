@@ -12,7 +12,7 @@ export default function GetStartedSection() {
                 <div className="text-white">No credit card required. No complexity. Just clean, fast invoicing.</div>
                 <div className="flex flex-row mt-10 gap-5">
                     <Link href="/login"><Button className="bg-white text-[var(--primary)] px-6 py-3 text-sm font-bold hover:bg-white/90">Create Invoice Now<Zap></Zap></Button></Link>
-                    <Link href="#features"><Button className="border border-input px-6 py-3 text-white text-sm font-bold hover:bg-[var(--primary)]/50">View Features</Button></Link>
+                    <Link href="#features"><Button variant="default" className="border border-input px-6 py-3 text-white text-sm font-bold">View Features</Button></Link>
                 </div>
                 <div className="text-white flex flex-row gap-5 pt-10">
                     <p>Instant PDF Export</p>

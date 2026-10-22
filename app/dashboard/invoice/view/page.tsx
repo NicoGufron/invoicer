@@ -193,7 +193,7 @@ export default function ViewInvoices() {
                 <div className="flex flex-col gap-2.5">
                     <p className="text-xs">Due Date</p>
                     <Popover>
-                        <PopoverTrigger>
+                        <PopoverTrigger asChild>
 
                             <Button variant="outline" className={"w-full justify-start text-muted-foreground"}><CalendarIcon></CalendarIcon></Button>
                         </PopoverTrigger>

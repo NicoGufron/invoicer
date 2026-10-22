@@ -1,6 +1,8 @@
+import RecentInvoicesDashboard from "@/app/components/recent_invoices_dashboard";
 import { useAuthStore } from "@/app/stores/auth.store";
 import { Button } from "@/components/ui/button";
 import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@/components/ui/item";
+import { Table, TableHeader } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createClient } from "@/lib/server";
 import { AlertCircle, AlertCircleIcon, ArrowRight, Banknote, Info } from "lucide-react";
@@ -94,6 +96,8 @@ export default async function Home() {
                     </Item>
                 </div>
             </div>
+            <hr className="my-5"></hr>
+            <RecentInvoicesDashboard></RecentInvoicesDashboard>
         </div>
     )
 }

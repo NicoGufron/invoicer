@@ -19,7 +19,6 @@ export default function InvoiceLayout({ user, id }: Props ) {
             <div className="border flex-1 rounded-xl bg-white mb-5 shadow-xl overflow-y-auto">
                 <InvoiceEditorV2 
                     user={user} 
-                    previewRef={previewRef}
                     showPreview={showPreview}
                     onPreview={() => setShowPreview(prev => !prev)}
                 >
