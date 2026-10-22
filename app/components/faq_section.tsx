@@ -36,7 +36,7 @@ export default function FaqSection() {
     ]
 
     return (
-        <section className="pt-[148px] px-[5%] pb-[100px] m-auto bg-[#F2EFFF]">
+        <section id="faq" className="pt-[148px] px-[5%] pb-[100px] m-auto bg-[#F2EFFF]">
             <div className="uppercase tracking-wide text-sm font-bold text-[var(--primary)] pb-5 text-center">Got questions?</div>
             <div className="text-3xl text-center font-bold">Frequently Asked Questions</div>
             <div className="mt-10">

@@ -12,24 +12,6 @@ export default function Home() {
     <div className="w-screen h-screen">
       <NavbarLanding></NavbarLanding>
       <HeroSection></HeroSection>
-      <div className="bg-[var(--surface)]">
-        <div className="grid grid-cols-3 bg-[#F2EFFF] p-5 gap-5">
-          <div className="flex flex-col items-center py-5 bg-white rounded-xl">
-            <p className="text-3xl font-bold text-[var(--primary)]">30<span className="text-[var(--primary)]">s</span></p>
-            <p className="text-sm pt-2.5">Average creation time</p>
-          </div>
-          <div className="flex flex-col items-center py-5 bg-white rounded-xl">
-            <p className="text-3xl font-bold"><span className="text-[var(--primary)]">∞</span></p>
-            <p className="text-sm pt-2.5">Invoice count - no cap, ever</p>
-          </div>
-
-          <div className="flex flex-col items-center py-5 bg-white rounded-xl">
-            <p className="text-3xl font-bold text-[var(--primary)]">3</p>
-            <p className="text-sm pt-2.5">Export formats: PDF, JSON, email</p>
-          </div>
-        </div>
-      </div>
-
       <FeatureSection></FeatureSection>
       <DemoInvoiceSection></DemoInvoiceSection>
       <HowToSection></HowToSection>

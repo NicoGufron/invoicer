@@ -10,6 +10,7 @@ import { useState } from "react";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type DialogProps = {
     id: string,
@@ -31,7 +32,7 @@ export default function AddPartnerDialog({id} : DialogProps) {
         email: "",
         phone: "",
         address: "",
-        type: "client"
+        type: "Client"
     });
 
     const handleChange = (key: keyof CreatePartnerPayload, value: any) => {
@@ -61,6 +62,19 @@ export default function AddPartnerDialog({id} : DialogProps) {
                         <Input placeholder="Company Email" defaultValue={payload.email} onBlur={(e) => handleChange('email', e.currentTarget.value)}></Input>
                     </Field>
                     <Field>
+                        <FieldLabel>Company Type</FieldLabel>
+                        <Select value={payload.type} onValueChange={(value) => handleChange('type', value)}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select company type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Client">Client</SelectItem>
+                                <SelectItem value="Supplier">Supplier</SelectItem>
+                                <SelectItem value="Both">Both</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </Field>
+                    <Field>
                         <FieldLabel>Company Phone Number</FieldLabel>
                         <ButtonGroup>
                             <Button variant={"outline"}>+62</Button>
@@ -74,7 +88,7 @@ export default function AddPartnerDialog({id} : DialogProps) {
                         <FieldLabel>Company Address</FieldLabel>
                         <Textarea placeholder="Company Address" defaultValue={payload.address} onBlur={(e) => handleChange('address', e.currentTarget.value)}></Textarea>
                     </Field>
-                    <Button className="bg-[#25343F]" onClick={handleAddPartner}>{isLoadingCreatePartner ? <Spinner/> : "Add Partner"}</Button>
+                    <Button className="bg-[var(--primary)]" onClick={handleAddPartner}>{isLoadingCreatePartner ? <Spinner/> : "Add Partner"}</Button>
                 </div>
             </DialogContent>
         </Dialog>

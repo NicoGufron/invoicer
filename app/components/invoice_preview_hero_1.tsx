@@ -41,11 +41,11 @@ const InvoicePreviewHero1 = forwardRef<HTMLDivElement>((_, ref) => {
     }, [total]);
 
     return (
-        <div ref={ref} className="bg-white w-[1/2] h-[1/3] flex flex-col text-[#1a1a1a] overflow-hidden shadow-lg rounded-lg">
+        <div ref={ref} className="flex h-full min-h-0 flex-col overflow-hidden shadow-lg rounded-lg bg-white text-[#1a1a1a]">
             {/* Minimal top rule — single pixel, neutral */}
-            <div className="h-px w-full bg-[#e0e0e0] flex-shrink-0" />
+            <div className="h-2 w-full bg-[var(--primary)] flex-shrink-0" />
 
-            <div className="flex flex-col flex-1 px-14 py-12 overflow-y-auto">
+            <div className="flex min-h-0 flex-1 flex-col px-14 py-12 overflow-y-auto">
 
                 {/* Header: company left, invoice number right */}
                 <div className="flex justify-between items-start mb-14">
@@ -69,7 +69,7 @@ const InvoicePreviewHero1 = forwardRef<HTMLDivElement>((_, ref) => {
 
                     <div className="text-right">
                         <div className="text-[9px] uppercase tracking-[0.18em] text-[#bbb] mb-2">Invoice</div>
-                        <div className="text-2xl font-mono font-medium tracking-tight text-[#111]">
+                        <div className="text-2xl font-mono font-medium tracking-tight text-[var(--primary)]">
                             {invoice.invoiceNumber || "INV-001"}
                         </div>
                         <div className="mt-4 space-y-1">
@@ -181,8 +181,8 @@ const InvoicePreviewHero1 = forwardRef<HTMLDivElement>((_, ref) => {
                             </div>
                         )} */}
                         <div className="flex justify-between items-baseline pt-3 mt-1 border-t border-[#222]">
-                            <span className="text-xs font-semibold text-[#111]">Total Due</span>
-                            <span className="text-lg font-semibold tracking-tight text-[#111]">{fmt(total, currency)}</span>
+                            <span className="text-lg font-semibold text-[#111]">Total Due</span>
+                            <span className="text-lg font-semibold tracking-tight text-[var(--primary)]">{fmt(total, currency)}</span>
                         </div>
                     </div>
                 </div>

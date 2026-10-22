@@ -37,8 +37,8 @@ export default async function Home() {
 
             </div>
             <div className="my-5">
-                <p className="text-xl font-bold">Dashboard</p>
-                <Tabs>
+                <p className="text-xl font-bold text-[var(--primary)]">Dashboard</p>
+                <Tabs defaultValue={"today"} className="w-full mt-2.5">
                     <TabsList defaultValue={"today"}>
                         <TabsTrigger value={"today"}>Today</TabsTrigger>
                         <TabsTrigger value={"weekly"}>7 Days</TabsTrigger>
@@ -46,21 +46,17 @@ export default async function Home() {
                         <TabsTrigger value={"threemonth"}>90 Days</TabsTrigger>
                     </TabsList>
                     <TabsContent value="today">
-                        <div className="grid grid-cols-4 gap-5">
-                            <div className="flex flex-col justify-between border border-white/8 rounded-lg p-5 bg-[var(--card)] shadow-md space-y-2.5 hover:-translate-y-1 transition-all hover:shadow-lg">
-                                <p className="font-bold text-sm">Payments Due</p>
+                        <div className="grid grid-cols-3 gap-5">
+                            <div className="flex flex-col justify-between border border-input rounded-lg p-5 bg-[var(--card)] space-y-2.5 hover:-translate-y-1 transition-all hover:shadow-lg">
+                                <p className="font-bold text-sm text-[var(--primary)]">Payments Due</p>
                                 <p className="text-2xl font-bold">$18,101</p>
                             </div>
-                            <div className="flex flex-col justify-between border border-white/8 rounded-lg p-5 bg-[var(--card)] shadow-md space-y-2.5 hover:-translate-y-1 transition-all hover:shadow-lg">
-                                <p className="font-bold text-sm">Total to be paid</p>
+                            <div className="flex flex-col justify-between border border-input rounded-lg p-5 bg-[var(--card)] space-y-2.5 hover:-translate-y-1 transition-all hover:shadow-lg">
+                                <p className="font-bold text-sm text-[var(--primary)]">Total to be paid</p>
                                 <p className="text-2xl font-bold">$18,101</p>
                             </div>
-                            <div className="flex flex-col justify-between border border-white/8 rounded-lg p-5 bg-[var(--card)] shadow-md space-y-2.5 hover:-translate-y-1 transition-all hover:shadow-lg">
-                                <p className="font-bold text-sm">Total to be paid</p>
-                                <p className="text-2xl font-bold">$18,101</p>
-                            </div>
-                            <div className="flex flex-col justify-between border border-white/8 rounded-lg p-5 bg-[var(--card)] shadow-md space-y-2.5 hover:-translate-y-1 transition-all hover:shadow-lg">
-                                <p className="font-bold text-sm">Total to be paid</p>
+                            <div className="flex flex-col justify-between border border-input rounded-lg p-5 bg-[var(--card)] space-y-2.5 hover:-translate-y-1 transition-all hover:shadow-lg">
+                                <p className="font-bold text-sm text-[var(--primary)]">Collected</p>
                                 <p className="text-2xl font-bold">$18,101</p>
                             </div>
                         </div>
@@ -69,7 +65,7 @@ export default async function Home() {
             </div>
             <hr className="my-5"></hr>
             <div className="">
-                <p className="text-xl font-bold">Quick Links</p>
+                <p className="text-xl font-bold text-[var(--primary)]">Quick Links</p>
                 <div className="grid grid-cols-3 mt-3 space-x-5">
 
                     <Item variant={"outline"} className="bg-white" asChild>

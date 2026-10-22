@@ -78,7 +78,10 @@ export default function PartnerPage() {
 
     return (
         <div className="p-6">
-            <h1 className="text-2xl font-bold">Partners</h1>
+            <h1 className="text-xl font-bold ">Partners</h1>
+            <p className="text-xs text-muted-foreground">
+                Manage your partners and their details.
+            </p>
             <div className="grid grid-cols-3 gap-5 mt-10">
                 <div className="flex flex-col gap-2.5">
                     <p className="text-xs">Find Company</p>

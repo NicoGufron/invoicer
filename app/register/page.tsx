@@ -59,7 +59,7 @@ export default function RegisterPage() {
             <div className="grid grid-cols-2 h-full">
                 <div className="p-10 flex items-center justify-center">
                     <div className="p-5 flex flex-col w-1/2 justify-center gap-5">
-                        <p className="text-3xl font-bold pb-5 text-center">Register Account</p>
+                        <p className="text-3xl text-[var(--primary)] font-bold pb-5 text-center">Register Account</p>
                         <Field>
                             <FieldLabel>Email</FieldLabel>
                             <Input placeholder="Your email" defaultValue={email} onBlur={(e) => setEmail(e.currentTarget.value)}></Input>
@@ -88,7 +88,6 @@ export default function RegisterPage() {
                             <ButtonGroup>
                                 <Popover open={openPhonePrefix} onOpenChange={setOpenPhonePrefix}>
                                     <PopoverTrigger asChild>
-
                                         <Button variant={"outline"}>{selectedPhonePrefix}</Button>
                                     </PopoverTrigger>
                                     <PopoverContent align="start">
@@ -99,7 +98,7 @@ export default function RegisterPage() {
                                                 <CommandGroup></CommandGroup>
                                                 {
                                                     phonePrefixes.map((e, index) => (
-                                                        <CommandItem key={index} value={e.phone_prefix} onSelect={() => {
+                                                        <CommandItem key={index} value={`${e.short_name} ${e.phone_prefix}`} onSelect={() => {
                                                             setSelectedPhonePrefix(e.phone_prefix);
                                                             setOpenPhonePrefix(false);
                                                         }}><span className="border-r-1 pr-2">{e.short_name}</span>{e.phone_prefix}</CommandItem>
@@ -115,7 +114,7 @@ export default function RegisterPage() {
                                 }}></Input>
                             </ButtonGroup>
                         </Field>
-                        <Button onClick={handleRegister} className="bg-[#25343F] w-full cursor-pointer">{isLoading ? <Spinner></Spinner> : "Create Account"}</Button>
+                        <Button onClick={handleRegister} className="bg-[var(--primary)] w-full cursor-pointer">{isLoading ? <Spinner></Spinner> : "Create Account"}</Button>
                         <p className="text-sm text-center">Already have an account? <Link href="/login" className="border-b-1 border-[#101010] hover:text-[var(--primary)] font-bold transition">Sign In</Link></p>
                     </div>
                 </div>

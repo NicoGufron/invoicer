@@ -59,7 +59,7 @@ export function AppSidebar() {
                                 {/* <SidebarMenuButton> */}
                                 <Collapsible>
                                     <CollapsibleTrigger asChild>
-                                        <SidebarMenuButton variant="outline" className="font-semibold">
+                                        <SidebarMenuButton className="font-semibold">
                                             <FileText></FileText>
                                             Invoice
                                         </SidebarMenuButton>

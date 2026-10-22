@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/client";
 import { toast } from "sonner";
 import { create } from "zustand";
-export type PartnerType = 'client' | 'supplier' | 'both';
+export type PartnerType = 'Client' | 'Supplier' | 'Both';
 
 export type Partner = {
     id: number,
